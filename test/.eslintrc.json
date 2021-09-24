@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "plugin:jest/recommended",
+    "plugin:jest/style"
+  ],
+  "plugins": [
+    "jest"
+  ],
+  "rules": {
+    "jest/require-top-level-describe": "error"
+  },
+  "env": {
+    "jest/globals": true
+  }
+}
