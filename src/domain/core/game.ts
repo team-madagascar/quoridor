@@ -20,6 +20,14 @@ export interface GameView {
   allowedNodesToMove(): ReadonlyArray<Node>;
 
   getNode(point: Point): Node;
+
+  isGameOver(): boolean;
+
+  get winner(): PlayerView;
+
+  get loser(): PlayerView;
+
+  moveToDirection(node: Node, direction: Direction): Node | undefined;
 }
 
 export class Game implements GameView {
