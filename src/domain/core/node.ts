@@ -1,28 +1,23 @@
 import {Direction, Point} from './point';
-import {ConnectionBlocker} from './connection-blocker';
 import {NODE_GAP} from './game';
-import {searchBFS} from './search';
+import {Graph} from './graph';
 
 export class Node {
-  constructor(
-    readonly position: Point,
-    private readonly _blocker: ConnectionBlocker,
-    private readonly _nodes: Map<Point, Node>
-  ) {
-    if (!position.isEven()) {
+  constructor(readonly position: Point, private readonly _graph: Graph) {
+    if (!position.isNodePoint()) {
       throw new Error('Node should have even position');
     }
   }
 
   canMoveToDirection(direction: Direction) {
     const newPoint = this.position.move(direction, NODE_GAP);
-    return this.isConnectedToNeighbor(this.getNode(newPoint));
+    return this.isConnectedTo(this._graph.getNode(newPoint));
   }
 
   moveToDirection(direction: Direction): Node {
     const newPosition = this.position.move(direction, NODE_GAP);
-    if (this.isConnectedToNeighbor(this.getNode(newPosition))) {
-      return this.getNode(newPosition);
+    if (this.isConnectedTo(this._graph.getNode(newPosition))) {
+      return this._graph.getNode(newPosition);
     }
     throw new Error(
       `Can't move from: ${JSON.stringify(this.position)}, to: ${JSON.stringify(
@@ -31,36 +26,39 @@ export class Node {
     );
   }
 
-  isConnectedTo(node: Node): boolean {
-    if (!this.position.neighbors(NODE_GAP).includes(node.position)) {
-      return false;
-    }
-    const midPoint = this.position.midPoint(node.position);
-    return !this._blocker.isBlocked(midPoint);
+  search(endWalkPredicate: (node: Node) => boolean): boolean {
+    return this._graph.searchBFS(this, endWalkPredicate);
   }
 
   hasAnyPathTo(target: Node): boolean {
-    return searchBFS(this, node => node.position === target.position);
+    return this._graph.searchBFS(this, node => node.equals(target));
+  }
+
+  equals(node: Node): boolean {
+    return this.position === node.position;
+  }
+
+  isConnectedTo(node: Node): boolean {
+    return this._graph.hasConnection(node, this);
+  }
+
+  isNeighbor(node: Node): boolean {
+    return this.position.isNeighbor(node.position, NODE_GAP);
+  }
+
+  allNeighbors(): ReadonlyArray<Node> {
+    return this.position.neighbors(NODE_GAP).map(p => this._graph.getNode(p));
+  }
+
+  connectedNeighbors(): ReadonlyArray<Node> {
+    return this.allNeighbors().filter(n => this.isConnectedTo(n));
   }
 
   get connectedNodes(): ReadonlyArray<Node> {
-    return this.neighbors().filter(n => this.isConnectedToNeighbor(n));
+    return this.neighbors().filter(n => this.isConnectedTo(n));
   }
 
   private neighbors() {
-    return this.position.neighbors(NODE_GAP).map(n => this.getNode(n));
-  }
-
-  private isConnectedToNeighbor(node: Node): boolean {
-    const midPoint = this.position.midPoint(node.position);
-    return !this._blocker.isBlocked(midPoint);
-  }
-
-  private getNode(point: Point): Node {
-    const node = this._nodes.get(point);
-    if (node === undefined) {
-      throw new Error(`Has no node with position: ${JSON.stringify(point)}`);
-    }
-    return node;
+    return this.position.neighbors(NODE_GAP).map(n => this._graph.getNode(n));
   }
 }

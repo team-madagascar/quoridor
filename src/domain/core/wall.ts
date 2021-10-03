@@ -30,7 +30,7 @@ export class Wall {
   }
 
   private requirePointsNotToBePlayerPoints() {
-    if (this.points.some(p => p.isEven())) {
+    if (this.points.some(p => p.isNodePoint())) {
       throw new Error('Points in wall can`t be player points');
     }
   }

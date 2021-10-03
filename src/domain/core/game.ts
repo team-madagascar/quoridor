@@ -1,54 +1,57 @@
-import {Direction, Point} from './point';
-import {Player, PLAYER_STEP, PlayerView} from './player';
+import {Direction, Directions, Point} from './point';
+import {Player, PlayerView} from './player';
 import {Wall} from './wall';
 import {ConnectionBlocker} from './connection-blocker';
 import {Node} from './node';
 import {Players} from './players';
+import {Graph} from './graph';
 
 export const GAME_GRID_SIZE = 17;
 
-export class Game {
+export interface GameView {
+  get currentPlayer(): PlayerView;
+
+  get currentOpponent(): PlayerView;
+
+  isBlocked(point: Point): boolean;
+
+  hasPlayer(nodeView: Node): boolean;
+
+  allowedNodesToMove(): ReadonlyArray<Node>;
+
+  getNode(point: Point): Node;
+}
+
+export class Game implements GameView {
   private readonly _blocker = new ConnectionBlocker();
-  private readonly _nodes = new Map<Point, Node>();
+  private readonly _graph: Graph;
   private readonly _players: Players;
 
   constructor(playerId1: string, playerId2: string) {
-    this.initNodes();
-    this._players = new Players(playerId1, playerId2, this._nodes);
+    this._graph = new Graph(this._blocker);
+    this._players = new Players(playerId1, playerId2, this._graph);
   }
 
-  private initNodes() {
-    for (let i = 0; i < GAME_GRID_SIZE; i++) {
-      for (let j = 0; j < GAME_GRID_SIZE; j++) {
-        const point = Point.create(i, j);
-        if (point.isEven()) {
-          this._nodes.set(point, new Node(point, this._blocker, this._nodes));
-        }
-      }
-    }
+  getNode(point: Point): Node {
+    return this._graph.getNode(point);
   }
 
-  moveCurrentPlayer(direction: Direction) {
+  moveCurrentPlayerToDirection(direction: Direction) {
     this.requireGameIsNotOver();
-    this.moveCurrentPlayerToDirection(direction);
+    this.movePlayerToDirection(this._players.currentPlayer, direction);
     this._players.changeCurrentPlayer();
   }
 
-  private moveCurrentPlayerToDirection(direction: Direction) {
-    const newNode = this.movePlayer(
-      this._players.currentPlayer.currentNode,
-      direction
-    );
-    if (newNode === undefined) {
-      throw new Error(
-        `Player "${this._players.currentPlayer.id}" can't make step in direction: ${Direction[direction]}`
-      );
+  moveCurrentPlayerToNode(node: Node) {
+    this.requireGameIsNotOver();
+    if (this.allowedNodesToMove().includes(node)) {
+      this._players.currentPlayer.moveTo(node);
     }
-    this._players.currentPlayer.moveTo(newNode);
+    this._players.changeCurrentPlayer();
   }
 
-  hasPlayer(point: Point): boolean {
-    return this._players.nodeHasPlayer(this._nodes.get(point)!);
+  hasPlayer(node: Node): boolean {
+    return this._players.nodeHasPlayer(this.getNode(node.position));
   }
 
   placeWall(wall: Wall) {
@@ -60,19 +63,33 @@ export class Game {
     this._players.changeCurrentPlayer();
   }
 
-  get isGameOver(): boolean {
+  isGameOver(): boolean {
     return this._players.somePlayerWin();
+  }
+
+  allowedNodesToMove(): ReadonlyArray<Node> {
+    const currentNode = this._players.currentPlayer.currentNode;
+    return Directions.allDirections()
+      .map(d => this.moveToDirection(currentNode, d))
+      .filter(n => n !== undefined) as ReadonlyArray<Node>;
   }
 
   get players(): ReadonlyArray<PlayerView> {
     return this._players.players;
   }
 
-  get winner(): Player {
-    if (this.isGameOver) {
+  get winner(): PlayerView {
+    if (this.isGameOver()) {
       return this._players.currentPlayer;
     }
     throw new Error('Has no winner yet. Game is not over');
+  }
+
+  get loser(): PlayerView {
+    if (this.isGameOver()) {
+      return this.currentOpponent;
+    }
+    throw new Error('Has no loser yet. Game is not over');
   }
 
   get currentOpponent(): PlayerView {
@@ -83,21 +100,31 @@ export class Game {
     return this._players.currentPlayer;
   }
 
-  getPlayer(point: Point): Player {
-    return this._players.getPlayer(point);
+  getPlayer(node: Node): PlayerView {
+    return this._players.getPlayer(node);
   }
 
   isBlocked(point: Point) {
     return this._blocker.isBlocked(point);
   }
 
-  private movePlayer(node: Node, direction: Direction): Node | undefined {
+  private movePlayerToDirection(player: Player, direction: Direction) {
+    const newNode = this.moveToDirection(player.currentNode, direction);
+    if (newNode === undefined) {
+      throw new Error(
+        `Player "${player.id}" can't make step in direction: ${Direction[direction]}`
+      );
+    }
+    player.moveTo(newNode);
+  }
+
+  moveToDirection(node: Node, direction: Direction): Node | undefined {
     if (!node.canMoveToDirection(direction)) {
       return undefined;
     }
     const newNode = node.moveToDirection(direction);
     if (this._players.nodeHasPlayer(newNode)) {
-      return this.movePlayer(newNode, direction);
+      return this.moveToDirection(newNode, direction);
     }
     return newNode;
   }
@@ -110,7 +137,7 @@ export class Game {
   }
 
   private requireGameIsNotOver() {
-    if (this.isGameOver) {
+    if (this.isGameOver()) {
       throw new Error('Game is already over');
     }
   }

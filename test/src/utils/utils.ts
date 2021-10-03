@@ -12,16 +12,17 @@ export const printGameGridToConsole = (game: Game) => {
     grid.push([]);
     for (let j = 0; j < GAME_GRID_SIZE; j++) {
       const point = Point.create(i, j);
-      if (game.hasPlayer(point)) {
-        const player = game.getPlayer(point);
-        grid[point.row][point.column] = player.id;
-        continue;
-      }
       if (game.isBlocked(point)) {
         grid[point.row][point.column] = '#';
         continue;
       }
-      if (point.isEven()) {
+      if (point.isNodePoint()) {
+        const node = game.getNode(point);
+        if (game.hasPlayer(node)) {
+          const player = game.getPlayer(node);
+          grid[point.row][point.column] = player.id;
+          continue;
+        }
         grid[point.row][point.column] = '*';
         continue;
       }

@@ -5,17 +5,17 @@ import {printGameGridToConsole} from '../utils/utils';
 
 const makeSecondPlayerWin = (game: Game) => {
   for (let i = 0; i < 7; i++) {
-    game.moveCurrentPlayer(Direction.Down);
-    game.moveCurrentPlayer(Direction.Up);
+    game.moveCurrentPlayerToDirection(Direction.Down);
+    game.moveCurrentPlayerToDirection(Direction.Up);
   }
 };
 
 const movePlayersToCenter = (game: Game) => {
   for (let i = 0; i < 3; i++) {
-    game.moveCurrentPlayer(Direction.Down);
-    game.moveCurrentPlayer(Direction.Up);
+    game.moveCurrentPlayerToDirection(Direction.Down);
+    game.moveCurrentPlayerToDirection(Direction.Up);
   }
-  game.moveCurrentPlayer(Direction.Down);
+  game.moveCurrentPlayerToDirection(Direction.Down);
 };
 
 describe('Game', () => {
@@ -35,7 +35,7 @@ describe('Game', () => {
   });
 
   it('should throw error when players can`t reach their finishes', () => {
-    game.moveCurrentPlayer(Direction.Down);
+    game.moveCurrentPlayerToDirection(Direction.Down);
     game.placeWall(Wall.create(Point.create(0, 7), Direction.Down));
     game.placeWall(Wall.create(Point.create(3, 8), Direction.Right));
 
@@ -48,7 +48,7 @@ describe('Game', () => {
   it('should throw error when game is finished', () => {
     makeSecondPlayerWin(game);
 
-    const f = () => game.moveCurrentPlayer(Direction.Down);
+    const f = () => game.moveCurrentPlayerToDirection(Direction.Down);
 
     expect(f).toThrow('Game is already over');
   });
@@ -62,7 +62,7 @@ describe('Game', () => {
     expect(playersBeforeTwoSteps[0].currentPosition).toBe(Point.create(8, 8));
     expect(playersBeforeTwoSteps[1].currentPosition).toBe(Point.create(10, 8));
 
-    game.moveCurrentPlayer(Direction.Up);
+    game.moveCurrentPlayerToDirection(Direction.Up);
 
     const playersAfterTwoSteps = game.players;
     expect(playersAfterTwoSteps[0].currentPosition).toBe(Point.create(8, 8));

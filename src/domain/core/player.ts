@@ -1,6 +1,5 @@
-import {Direction, Point} from './point';
+import {Point} from './point';
 import {Node} from './node';
-import {searchBFS} from './search';
 
 export interface PlayerView {
   get id(): string;
@@ -11,16 +10,14 @@ export interface PlayerView {
 
   get currentPosition(): Point;
 
+  hasWallsToPlace(): boolean;
+
   isFinishReached(): boolean;
+
+  isFinishNode(node: Node): boolean;
 }
 
-export const PLAYER_STEP = 2;
-
 export class Player implements PlayerView {
-  get currentNode(): Node {
-    return this._currentNode;
-  }
-
   static readonly DEFAULT_WALLS_COUNT = 10;
 
   private _remainingWallsCount: number;
@@ -34,6 +31,10 @@ export class Player implements PlayerView {
   ) {
     this._currentNode = startNode;
     this._remainingWallsCount = wallsCount;
+  }
+
+  get currentNode(): Node {
+    return this._currentNode;
   }
 
   get remainingWallsCount(): number {
@@ -52,17 +53,16 @@ export class Player implements PlayerView {
     return this._id;
   }
 
-  isFinishReached() {
+  isFinishReached(): boolean {
     return this.currentNode.position.row === this._finishRow;
   }
 
-  isFinishNode(node: Node) {
+  isFinishNode(node: Node): boolean {
     return this._finishRow === node.position.row;
   }
 
   canReachFinishPoint(): boolean {
-    const from = this.currentNode;
-    return searchBFS(from, n => this.isFinishNode(n));
+    return this.currentNode.search(n => this.isFinishNode(n));
   }
 
   takeWall() {
@@ -70,7 +70,7 @@ export class Player implements PlayerView {
     this._remainingWallsCount--;
   }
 
-  hasWallsToPlace() {
+  hasWallsToPlace(): boolean {
     return this._remainingWallsCount > 0;
   }
 

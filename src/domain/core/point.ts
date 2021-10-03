@@ -30,12 +30,16 @@ export class Point {
     return Point.create(this.row * scale, this.column * scale);
   }
 
-  isEven(): boolean {
+  isNodePoint(gridSize = GAME_GRID_SIZE): boolean {
+    return this.isEven() && this.isWithinGameGrid(gridSize);
+  }
+
+  private isEven() {
     return this.row % 2 === 0 && this.column % 2 === 0;
   }
 
   isConnectedWithPlayerPoint() {
-    return this.neighbors().some(p => p.isEven());
+    return this.neighbors().some(p => p.isNodePoint());
   }
 
   midPoint(point: Point): Point {
@@ -59,6 +63,10 @@ export class Point {
         )
       )
       .filter(p => p.isWithinGameGrid());
+  }
+
+  isNeighbor(point: Point, distance = 1): boolean {
+    return this.neighbors(distance).includes(point);
   }
 
   isWithinGameGrid(gridSize = GAME_GRID_SIZE): boolean {
@@ -91,6 +99,10 @@ export class Directions {
 
   static allVectors(): Point[] {
     return Object.values(Directions.DIRECTIONS);
+  }
+
+  static allDirections(): Direction[] {
+    return [Direction.Up, Direction.Left, Direction.Down, Direction.Right];
   }
 
   static vector(direction: Direction): Point {
