@@ -29,7 +29,7 @@ export class ConnectionBlocker {
     wall.points.forEach(p => this._blockedPoints.delete(p));
   }
 
-  intersectPlacedWalls(wall: Wall) {
+  intersectPlacedWalls(wall: Wall): boolean {
     return wall.points.some(p => this._blockedPoints.has(p));
   }
 

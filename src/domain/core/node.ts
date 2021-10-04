@@ -9,7 +9,7 @@ export class Node {
     }
   }
 
-  canMoveToDirection(direction: Direction) {
+  canMoveToDirection(direction: Direction): boolean {
     const newPoint = this.position.move(direction, NODE_GAP);
     return this.isConnectedTo(this._graph.getNode(newPoint));
   }
@@ -58,7 +58,7 @@ export class Node {
     return this.neighbors().filter(n => this.isConnectedTo(n));
   }
 
-  private neighbors() {
+  private neighbors(): ReadonlyArray<Node> {
     return this.position.neighbors(NODE_GAP).map(n => this._graph.getNode(n));
   }
 }

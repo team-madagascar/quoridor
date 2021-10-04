@@ -56,8 +56,6 @@ describe('Game', () => {
   it('should make two steps when can`t do one step', () => {
     movePlayersToCenter(game);
 
-    printGameGridToConsole(game);
-
     const playersBeforeTwoSteps = game.players;
     expect(playersBeforeTwoSteps[0].currentPosition).toBe(Point.create(8, 8));
     expect(playersBeforeTwoSteps[1].currentPosition).toBe(Point.create(10, 8));

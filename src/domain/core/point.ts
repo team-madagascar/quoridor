@@ -16,7 +16,7 @@ export class Point {
 
   private constructor(readonly row: number, readonly column: number) {}
 
-  static create(row: number, column: number) {
+  static create(row: number, column: number): Point {
     const key = `${row}:${column}`;
     let point = this.pool.get(key);
     if (point === undefined) {
@@ -34,7 +34,7 @@ export class Point {
     return this.isEven() && this.isWithinGameGrid(gridSize);
   }
 
-  private isEven() {
+  private isEven(): boolean {
     return this.row % 2 === 0 && this.column % 2 === 0;
   }
 
@@ -49,7 +49,7 @@ export class Point {
     );
   }
 
-  move(direction: Direction, distance: number) {
+  move(direction: Direction, distance: number): Point {
     const vector = Directions.vector(direction);
     return this.plus(vector.row * distance, vector.column * distance);
   }
@@ -84,7 +84,7 @@ export class Point {
     }
   }
 
-  private plus(deltaRow: number, deltaColumn: number) {
+  private plus(deltaRow: number, deltaColumn: number): Point {
     return Point.create(deltaRow + this.row, deltaColumn + this.column);
   }
 }
