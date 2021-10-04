@@ -3,20 +3,27 @@ import {PlayerGameResult} from './game-facade';
 import {GameView} from './core/game';
 
 export abstract class GameClient {
-  protected constructor(
-    private readonly _clientListener: ClientListener,
-    private readonly _id: string
-  ) {}
+  private clientListener: ClientListener | undefined;
+
+  protected constructor(private readonly _id: string) {}
 
   get id(): string {
     return this._id;
+  }
+
+  setGameListener(clientListener: ClientListener) {
+    this.clientListener = clientListener;
+  }
+
+  stopGame() {
+    this.clientListener!.onStopGame();
   }
 
   abstract get listener(): GameListener;
 }
 
 export interface GameListener {
-  onRestart(opponentResult: PlayerGameResult): Promise<boolean>;
+  onSessionOver(): void;
 
   onGameStart(game: GameView): Promise<void>;
 
@@ -26,8 +33,5 @@ export interface GameListener {
 }
 
 export interface ClientListener {
-  onRestartRequest(
-    clientId: string,
-    clientResult: PlayerGameResult
-  ): Promise<boolean>;
+  onStopGame(): void;
 }
