@@ -1,8 +1,6 @@
 import {Command} from './command';
 import {PlayerGameResult} from './game-facade';
-import {PlayerView} from './core/player';
-import {Point} from './core/point';
-import {GameView} from './core/view';
+import {GameView} from './core/game';
 
 export abstract class GameClient {
   protected constructor(
