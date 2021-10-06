@@ -2,10 +2,13 @@ import {Command} from './command';
 import {PlayerGameResult} from './game-facade';
 import {GameView} from './core/game';
 
-export abstract class GameClient {
+export class GameClient {
   private clientListener: ClientListener | undefined;
 
-  protected constructor(private readonly _id: string) {}
+  constructor(
+    private readonly _id: string,
+    private readonly gameListener: GameListener
+  ) {}
 
   get id(): string {
     return this._id;
@@ -19,7 +22,9 @@ export abstract class GameClient {
     this.clientListener!.onStopGame();
   }
 
-  abstract get listener(): GameListener;
+  get listener(): GameListener {
+    return this.gameListener;
+  }
 }
 
 export interface GameListener {

@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Farro:wght@400;500;700&display=swap');
+
+.modal-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 2000;
+}
+
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, .2);
+  background-color: royalblue ;
+  border-radius: 5px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 300px;
+  padding: 1rem;
+  border-bottom: 1px solid navy;
+  font-weight: 700;
+  font-size: 22px;
+  color: white;
+  font-family: 'Farro', sans-serif;
+  font-weight: 700;
+}
+
+.modal-body {
+  padding: 1rem;
+
+}
+
+.results img {
+  height: 300px;
+}
+
+.results {
+  display: flex;
+  justify-content: center;
+}
+
+.select-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-button {
+  margin: 10px 20px;
+  height: 40px;
+  width: 80%;
+  border-radius: 5px;
+  background-color: #1c1cf0;
+  border-color: royalblue;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: 'Farro', sans-serif;
+}
+
+.result-image {
+  height: 200px;
+  margin: 10px 0 20px 0;
+}
+
+.result-image-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-body-content-wrapper {
+  margin: 20px 0;
+}

@@ -1,0 +1,5 @@
+export enum playerTypes {
+  COMPUTER = 'COMPUTER',
+  OTHER_PLAYER = 'OTHER_PLAYER',
+  CURRENT_PLAYER = 'CURRENT_PLAYER',
+}

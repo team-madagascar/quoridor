@@ -4,7 +4,6 @@ import {ClientListener, GameClient} from './client';
 export enum PlayerGameResult {
   Victory,
   Defeat,
-  Draw,
 }
 
 export class GameFacade implements ClientListener {

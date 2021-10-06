@@ -28,6 +28,10 @@ export interface GameView {
   get loser(): PlayerView;
 
   moveToDirection(node: Node, direction: Direction): Node | undefined;
+
+  get placedWalls(): ReadonlyArray<Wall>;
+
+  canPlaceWall(wall: Wall): boolean;
 }
 
 export class Game implements GameView {
@@ -38,6 +42,23 @@ export class Game implements GameView {
   constructor(playerId1: string, playerId2: string) {
     this._graph = new Graph(this._blocker);
     this._players = new Players(playerId1, playerId2, this._graph);
+  }
+
+  canPlaceWall(wall: Wall): boolean {
+    if (this._blocker.intersectPlacedWalls(wall)) {
+      return false;
+    }
+    if (!this._players.canPlayersReachFinishPoints()) {
+      return false;
+    }
+    if (!this.currentPlayer.hasWallsToPlace()) {
+      return false;
+    }
+    return !this.isGameOver();
+  }
+
+  get placedWalls(): ReadonlyArray<Wall> {
+    return this._blocker.placedWalls;
   }
 
   getNode(point: Point): Node {
