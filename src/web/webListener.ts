@@ -30,7 +30,8 @@ export class WebListener {
       game.currentPlayer.currentPosition.column,
       game.currentPlayer.currentPosition.row,
       game.currentOpponent.currentPosition.column,
-      game.currentOpponent.currentPosition.row
+      game.currentOpponent.currentPosition.row,
+      game.placedWalls
     );
     return new Promise(resolve => {
       const playerActionHandler = (position: Point, direction?: Direction) => {
