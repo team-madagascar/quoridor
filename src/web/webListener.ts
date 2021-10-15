@@ -1,3 +1,4 @@
+import {setWallsNumbers} from './helpers/setWallsNumbers';
 import {emitter, eventTypes} from './emitter';
 import {GameView} from '../domain/core/game';
 import {PlayerGameResult} from '../domain/game-facade';
@@ -33,6 +34,10 @@ export class WebListener {
       game.currentOpponent.currentPosition.row,
       game.placedWalls
     );
+    setWallsNumbers({
+      playerWallsCount: game.currentPlayer.remainingWallsCount,
+      opponentWallsCount: game.currentOpponent.remainingWallsCount,
+    });
     return new Promise(resolve => {
       const playerActionHandler = (position: Point, direction?: Direction) => {
         if (
@@ -42,7 +47,16 @@ export class WebListener {
           return;
         }
         if (direction) {
-          resolve(Commands.placeWall(Wall.create(position, direction)));
+          if (!game.currentPlayer.remainingWallsCount) {
+            return;
+          }
+
+          const newWall = Wall.create(position, direction);
+          if (game.canPlaceWall(newWall)) {
+            resolve(Commands.placeWall(newWall));
+          } else {
+            return;
+          }
         } else {
           if (!game.allowedNodesToMove().includes(game.getNode(position))) {
             return;

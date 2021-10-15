@@ -3,6 +3,7 @@ import {showModal, createModalBody, hideModal} from './modal';
 import {SelectModeModalWindowTitles} from './enums/modalWindowTitles';
 import {playerTypes} from './enums/playerTypes';
 import {wallsCountTitle} from './enums/wallsCountTitle';
+import {setWallsNumbers} from './helpers/setWallsNumbers';
 
 const SELECT_MODE_HTML = `
 <div class="select-mode">
@@ -10,24 +11,6 @@ const SELECT_MODE_HTML = `
 <button class="modal-button" id="two-players-mode">2 players</button>
 </div>
 `;
-
-const opponentWallsCountNumber = <HTMLElement>(
-  document.querySelector('.opponent-walls-count-number')
-);
-const playerWallsCountNumber = <HTMLElement>(
-  document.querySelector('.player-walls-count-number')
-);
-
-const setWallsNumbers = ({
-  playerWallsCount,
-  opponentWallsCount,
-}: {
-  playerWallsCount: number;
-  opponentWallsCount: number;
-}) => {
-  opponentWallsCountNumber.innerText = String(opponentWallsCount);
-  playerWallsCountNumber.innerText = String(playerWallsCount);
-};
 
 const initGame = (opponent: playerTypes) => {
   const opponentWallsCountTitleText = <HTMLElement>(

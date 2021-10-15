@@ -97,12 +97,10 @@ export const renderBoard = (
     for (const point of wall.points) {
       const wallPartColumn = point.column;
       const wallPartRow = point.row;
-      console.log(wallPartColumn, wallPartRow);
       const wallPart = document.querySelector(
         `.cell[data-column='${wallPartColumn}'][data-row='${wallPartRow}']`
       );
 
-      console.log(wallPart);
       wallPart?.classList.add('set');
     }
   });
@@ -180,9 +178,14 @@ document.getElementById('game_container')?.addEventListener('click', e => {
       );
 
     for (let i = 0; i < options.length; i++) {
-      options[i].style.backgroundColor === 'rgb(0, 0, 128)'
-        ? (options[i].style.backgroundColor = '#1c1cf0')
-        : (options[i].style.backgroundColor = '#000080');
+      if (
+        !options[i].classList.contains('player1') &&
+        !options[i].classList.contains('player2')
+      ) {
+        options[i].style.backgroundColor === 'rgb(0, 0, 128)'
+          ? (options[i].style.backgroundColor = '#1c1cf0')
+          : (options[i].style.backgroundColor = '#000080');
+      }
     }
     emitter.emit(
       eventTypes.PLAYER_ACTION,
@@ -191,16 +194,6 @@ document.getElementById('game_container')?.addEventListener('click', e => {
     );
   } else if (target.classList.contains('wallv')) {
     direction = Direction.Down;
-    target.classList.add('set');
-    document
-      .querySelector(`.cell[data-column='${column}'][data-row='${row2}']`)
-      ?.classList.add('wallv');
-    document
-      .querySelector(`.cell[data-column='${column}'][data-row='${row2}']`)
-      ?.classList.add('set');
-    document
-      .querySelector(`.cell[data-column='${column}'][data-row='${row4}']`)
-      ?.classList.add('set');
     emitter.emit(
       eventTypes.PLAYER_ACTION,
       Point.create(row, column),
@@ -208,16 +201,6 @@ document.getElementById('game_container')?.addEventListener('click', e => {
     );
   } else if (target.classList.contains('wallh')) {
     direction = Direction.Right;
-    target.classList.add('set');
-    document
-      .querySelector(`.cell[data-column='${column2}'][data-row='${row}']`)
-      ?.classList.add('wallh');
-    document
-      .querySelector(`.cell[data-column='${column2}'][data-row='${row}']`)
-      ?.classList.add('set');
-    document
-      .querySelector(`.cell[data-column='${column4}'][data-row='${row}']`)
-      ?.classList.add('set');
     emitter.emit(
       eventTypes.PLAYER_ACTION,
       Point.create(row, column),
