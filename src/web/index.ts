@@ -4,6 +4,7 @@ import {emitter, eventTypes} from './emitter';
 import {Point} from '../domain/core/point';
 import {Direction} from '../domain/core/point';
 import {showSelectMode} from './selectModeModal';
+import {Wall} from '../domain/core/wall';
 
 const rows = 17;
 const columns = 17;
@@ -35,7 +36,8 @@ export const renderBoard = (
   column1: number,
   row1: number,
   column2: number,
-  row2: number
+  row2: number,
+  walls: ReadonlyArray<Wall> = []
 ) => {
   for (let r = 0; r < rows; r++) {
     board[r] = [];
@@ -83,6 +85,20 @@ export const renderBoard = (
     content += '</div>';
   }
   gameContainer!.innerHTML = content;
+
+  walls.forEach(wall => {
+    for (const point of wall.points) {
+      const wallPartColumn = point.column;
+      const wallPartRow = point.row;
+      console.log(wallPartColumn, wallPartRow);
+      const wallPart = document.querySelector(
+        `.cell[data-column='${wallPartColumn}'][data-row='${wallPartRow}']`
+      );
+
+      console.log(wallPart);
+      wallPart?.classList.add('set');
+    }
+  });
 };
 
 document.getElementById('game_container')?.addEventListener('click', e => {
@@ -112,7 +128,7 @@ document.getElementById('game_container')?.addEventListener('click', e => {
   ) {
     if (row1) {
       wall1 = document.querySelector(
-        `.cell[data-column='${column}'][data-row='${row1}}']`
+        `.cell[data-column='${column}'][data-row='${row1}']`
       );
     }
     console.log(wall1);
