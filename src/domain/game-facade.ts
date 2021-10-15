@@ -43,7 +43,7 @@ export class GameFacade implements ClientListener {
 
   private async notifyGameStarted() {
     const notification1 = this._client1.listener.onGameStart(this._game!);
-    const notification2 = this._client1.listener.onGameStart(this._game!);
+    const notification2 = this._client2.listener.onGameStart(this._game!);
     await Promise.all([notification1, notification2]);
   }
 

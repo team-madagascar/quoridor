@@ -166,6 +166,11 @@ document.getElementById('game_container')?.addEventListener('click', e => {
         ? (options[i].style.backgroundColor = '#1c1cf0')
         : (options[i].style.backgroundColor = '#000080');
     }
+    emitter.emit(
+      eventTypes.PLAYER_ACTION,
+      Point.create(row, column),
+      direction
+    );
   } else if (target.classList.contains('wallv')) {
     direction = Direction.Down;
     target.classList.add('set');
@@ -178,6 +183,11 @@ document.getElementById('game_container')?.addEventListener('click', e => {
     document
       .querySelector(`.cell[data-column='${column}'][data-row='${row4}']`)
       ?.classList.add('set');
+    emitter.emit(
+      eventTypes.PLAYER_ACTION,
+      Point.create(row, column),
+      direction
+    );
   } else if (target.classList.contains('wallh')) {
     direction = Direction.Right;
     target.classList.add('set');
@@ -190,8 +200,12 @@ document.getElementById('game_container')?.addEventListener('click', e => {
     document
       .querySelector(`.cell[data-column='${column4}'][data-row='${row}']`)
       ?.classList.add('set');
+    emitter.emit(
+      eventTypes.PLAYER_ACTION,
+      Point.create(row, column),
+      direction
+    );
   }
-  emitter.emit(eventTypes.PLAYER_ACTION, Point.create(column, row), direction);
 });
 
 document.getElementById('game_container')?.addEventListener('mouseover', e => {
