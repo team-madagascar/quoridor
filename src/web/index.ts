@@ -1,7 +1,9 @@
+import {playerTypes} from './enums/playerTypes';
 import {startGame} from './../domain/test';
-import {emitter, PLAYER_ACTION_EVENT} from './emitter';
+import {emitter, eventTypes} from './emitter';
 import {Point} from '../domain/core/point';
 import {Direction} from '../domain/core/point';
+import {showSelectMode} from './selectModeModal';
 
 const rows = 17;
 const columns = 17;
@@ -189,7 +191,7 @@ document.getElementById('game_container')?.addEventListener('click', e => {
       .querySelector(`.cell[data-column='${column4}'][data-row='${row}']`)
       ?.classList.add('set');
   }
-  emitter.emit(PLAYER_ACTION_EVENT, Point.create(column, row), direction);
+  emitter.emit(eventTypes.PLAYER_ACTION, Point.create(column, row), direction);
 });
 
 document.getElementById('game_container')?.addEventListener('mouseover', e => {
@@ -280,4 +282,6 @@ document.getElementById('game_container')?.addEventListener('mouseout', e => {
   }
 });
 
-startGame();
+showSelectMode().then((opponent: playerTypes) => {
+  startGame(opponent);
+});

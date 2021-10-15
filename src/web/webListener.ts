@@ -1,4 +1,4 @@
-import {emitter, PLAYER_ACTION_EVENT} from './emitter';
+import {emitter, eventTypes} from './emitter';
 import {GameView} from '../domain/core/game';
 import {PlayerGameResult} from '../domain/game-facade';
 import {Command, Commands} from '../domain/command';
@@ -42,10 +42,10 @@ export class WebListener {
           }
           resolve(Commands.moveToNode(game.getNode(position)));
         }
-        emitter.off(PLAYER_ACTION_EVENT, playerActionHandler);
+        emitter.off(eventTypes.PLAYER_ACTION, playerActionHandler);
       };
 
-      emitter.on(PLAYER_ACTION_EVENT, playerActionHandler);
+      emitter.on(eventTypes.PLAYER_ACTION, playerActionHandler);
     });
   }
 }
