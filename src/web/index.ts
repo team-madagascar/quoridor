@@ -13,6 +13,7 @@ class Cell {
   column: number;
   row: number;
   value: number;
+  node: boolean;
   wallv: boolean;
   wallh: boolean;
 
@@ -20,12 +21,14 @@ class Cell {
     column: number,
     row: number,
     value: number,
+    node: boolean,
     wallv: boolean,
     wallh: boolean
   ) {
     this.column = column;
     this.row = row;
     this.value = value;
+    this.node = node;
     this.wallv = wallv;
     this.wallh = wallh;
   }
@@ -41,10 +44,12 @@ export const renderBoard = (
     board[r] = [];
     for (let c = 0; c < columns; c++) {
       if (r % 2 === 0 && c % 2 !== 0)
-        board[r].push(new Cell(c, r, 0, true, false));
+        board[r].push(new Cell(c, r, 0, false, true, false));
       else if (r % 2 !== 0 && c % 2 === 0)
-        board[r].push(new Cell(c, r, 0, false, true));
-      else board[r].push(new Cell(c, r, 0, false, false));
+        board[r].push(new Cell(c, r, 0, false, false, true));
+      else if (r % 2 === 0 && c % 2 === 0)
+        board[r].push(new Cell(c, r, 0, true, false, false));
+      else board[r].push(new Cell(c, r, 0, false, false, false));
     }
   }
 
@@ -61,8 +66,10 @@ export const renderBoard = (
       const cell = board[r][c];
 
       let addСlass = '';
-      if (cell.value === 1) addСlass = 'player1';
-      if (cell.value === 2) addСlass = 'player2';
+      let addPlayer = '';
+      if (cell.value === 1) addPlayer = 'player1';
+      if (cell.value === 2) addPlayer = 'player2';
+      if (cell.node) addСlass = 'node';
       if (cell.wallh) addСlass = 'wallh';
       if (cell.wallv) addСlass = 'wallv';
 
@@ -75,8 +82,8 @@ export const renderBoard = (
       } else if (c % 2 !== 0 && r % 2 === 0) {
         content += `<div class='cell ${addСlass}' id='cell10' data-column='${c}'
         data-row='${r}'></div>`;
-      } else {
-        content += `<div class='cell ${addСlass}' id='cell' data-column='${c}'
+      } else if (c % 2 === 0 && r % 2 === 0) {
+        content += `<div class='cell ${addСlass} ${addPlayer}' id='cell' data-column='${c}'
         data-row='${r}'></div>`;
       }
     }
@@ -110,56 +117,51 @@ document.getElementById('game_container')?.addEventListener('click', e => {
     target.classList.contains('player1') ||
     target.classList.contains('player2')
   ) {
-    if (row1) {
+    if (row1 > -1) {
       wall1 = document.querySelector(
-        `.cell[data-column='${column}'][data-row='${row1}}']`
+        `.cell[data-column='${column}'][data-row='${row1}']`
       );
     }
-    console.log(wall1);
-    if (row2) {
+    if (row2 < 17) {
       wall2 = document.querySelector(
         `.cell[data-column='${column}'][data-row='${row2}']`
       );
     }
-    console.log(wall2);
-    if (column1) {
+    if (column1 > -1) {
       wall3 = document.querySelector(
         `.cell[data-column='${column1}'][data-row='${row}']`
       );
     }
-    console.log(wall3);
-    if (column2) {
+    if (column2 < 17) {
       wall4 = document.querySelector(
         `.cell[data-column='${column2}'][data-row='${row}']`
       );
     }
-    console.log(wall4);
 
-    if (row3 && wall1 && !wall1?.classList.contains('set'))
+    if (row3 > -1 && wall1 && !wall1?.classList.contains('set'))
       options.push(
         document.querySelector(
           `.cell[data-column='${column}'][data-row='${row3}']`
         ) as HTMLElement
       );
-    if (row4 && wall2 && !wall2?.classList.contains('set'))
+    if (row4 < 17 && wall2 && !wall2?.classList.contains('set'))
       options.push(
         document.querySelector(
           `.cell[data-column='${column}'][data-row='${row4}']`
         ) as HTMLElement
       );
-    if (column3 && wall3 && !wall3?.classList.contains('set'))
+    if (column3 > -1 && wall3 && !wall3?.classList.contains('set'))
       options.push(
         document.querySelector(
           `.cell[data-column='${column3}'][data-row='${row}']`
         ) as HTMLElement
       );
-    if (column4 && wall4 && !wall4?.classList.contains('set'))
+    if (column4 < 17 && wall4 && !wall4?.classList.contains('set'))
       options.push(
         document.querySelector(
           `.cell[data-column='${column4}'][data-row='${row}']`
         ) as HTMLElement
       );
-    console.log(options);
 
     for (let i = 0; i < options.length; i++) {
       options[i].style.backgroundColor === 'rgb(0, 0, 128)'
@@ -200,6 +202,12 @@ document.getElementById('game_container')?.addEventListener('click', e => {
     document
       .querySelector(`.cell[data-column='${column4}'][data-row='${row}']`)
       ?.classList.add('set');
+    emitter.emit(
+      eventTypes.PLAYER_ACTION,
+      Point.create(row, column),
+      direction
+    );
+  } else if (target.classList.contains('node')) {
     emitter.emit(
       eventTypes.PLAYER_ACTION,
       Point.create(row, column),
