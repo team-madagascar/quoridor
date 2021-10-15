@@ -1,7 +1,9 @@
+import {playerTypes} from './enums/playerTypes';
 import {startGame} from './../domain/test';
-import {emitter, PLAYER_ACTION_EVENT} from './emitter';
+import {emitter, eventTypes} from './emitter';
 import {Point} from '../domain/core/point';
 import {Direction} from '../domain/core/point';
+import {showSelectMode} from './selectModeModal';
 
 console.log('dhjjfjvjf');
 
@@ -188,7 +190,7 @@ document.getElementById('game_container')?.addEventListener('click', e => {
       .querySelector(`.cell[data-x='${x3}'][data-y='${y}']`)
       ?.classList.add('set');
   }
-  emitter.emit(PLAYER_ACTION_EVENT, Point.create(x, y), direction);
+  emitter.emit(eventTypes.PLAYER_ACTION, Point.create(x, y), direction);
 });
 
 document.getElementById('game_container')?.addEventListener('mouseover', e => {
@@ -279,4 +281,6 @@ document.getElementById('game_container')?.addEventListener('mouseout', e => {
   }
 });
 
-startGame();
+showSelectMode().then((opponent: playerTypes) => {
+  startGame(opponent);
+});
