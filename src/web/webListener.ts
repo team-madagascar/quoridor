@@ -34,6 +34,11 @@ export class WebListener {
     );
     return new Promise(resolve => {
       const playerActionHandler = (position: Point, direction?: Direction) => {
+        if (
+          position !== game.currentPlayer.currentPosition &&
+          position !== game.currentOpponent.currentPosition
+        )
+          return;
         if (direction) {
           resolve(Commands.placeWall(Wall.create(position, direction)));
         } else {
