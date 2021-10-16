@@ -17,7 +17,12 @@ export class WebListener {
       game.currentPlayer.currentPosition.column,
       game.currentPlayer.currentPosition.row,
       game.currentOpponent.currentPosition.column,
-      game.currentOpponent.currentPosition.row
+      game.currentOpponent.currentPosition.row,
+      game.placedWalls,
+      game.allowedNodesToMove(),
+      game.currentPlayer.currentPosition === game.players[0].currentPosition
+        ? 1
+        : 2
     );
     return Promise.resolve();
   }
@@ -33,7 +38,10 @@ export class WebListener {
       game.players[1].currentPosition.column,
       game.players[1].currentPosition.row,
       game.placedWalls,
-      game.allowedNodesToMove()
+      game.allowedNodesToMove(),
+      game.currentPlayer.currentPosition === game.players[0].currentPosition
+        ? 1
+        : 2
     );
     setWallsNumbers({
       playerWallsCount: game.currentPlayer.remainingWallsCount,

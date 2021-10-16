@@ -42,7 +42,8 @@ export const renderBoard = (
   column2: number,
   row2: number,
   walls: ReadonlyArray<Wall> = [],
-  nodes: ReadonlyArray<Node> = []
+  nodes: ReadonlyArray<Node> = [],
+  currentPlayerIndex: number
 ) => {
   for (let r = 0; r < rows; r++) {
     board[r] = [];
@@ -73,6 +74,7 @@ export const renderBoard = (
       let addPlayer = '';
       if (cell.value === 1) addPlayer = 'player1';
       if (cell.value === 2) addPlayer = 'player2';
+      if (cell.value === currentPlayerIndex) addPlayer += ' current-player';
       if (cell.node) addСlass = 'node';
       if (cell.wallh) addСlass = 'wallh';
       if (cell.wallv) addСlass = 'wallv';
@@ -118,16 +120,15 @@ export const renderBoard = (
   });
 };
 
+document.querySelector('.restart-button')?.addEventListener('click', () => {});
+
 document.getElementById('game_container')?.addEventListener('click', e => {
   const target: HTMLElement = e.target as HTMLElement;
   let direction;
   const column = +(target.getAttribute('data-column') as string);
   const row = +(target.getAttribute('data-row') as string);
 
-  if (
-    target.classList.contains('player1') ||
-    target.classList.contains('player2')
-  ) {
+  if (target.classList.contains('current-player')) {
     const options = Array.from(
       document.getElementsByClassName('option') as HTMLCollectionOf<HTMLElement>
     );

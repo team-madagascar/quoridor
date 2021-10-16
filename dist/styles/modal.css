@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.85);
   z-index: 2000;
 }
 
@@ -37,7 +37,6 @@
 
 .modal-body {
   padding: 1rem;
-
 }
 
 .results img {
