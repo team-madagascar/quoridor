@@ -5,6 +5,7 @@ import {Point} from '../domain/core/point';
 import {Direction} from '../domain/core/point';
 import {showSelectMode} from './selectModeModal';
 import {Wall} from '../domain/core/wall';
+import {Node} from '../domain/core/node';
 
 const rows = 17;
 const columns = 17;
@@ -40,7 +41,8 @@ export const renderBoard = (
   row1: number,
   column2: number,
   row2: number,
-  walls: ReadonlyArray<Wall> = []
+  walls: ReadonlyArray<Wall> = [],
+  nodes: ReadonlyArray<Node> = []
 ) => {
   for (let r = 0; r < rows; r++) {
     board[r] = [];
@@ -104,94 +106,36 @@ export const renderBoard = (
       wallPart?.classList.add('set');
     }
   });
+
+  nodes.forEach(node => {
+    const optionColumn = node.position.column;
+    const optionRow = node.position.row;
+    const option = document.querySelector(
+      `.cell[data-column='${optionColumn}'][data-row='${optionRow}']`
+    );
+
+    option?.classList.add('option');
+  });
 };
 
 document.getElementById('game_container')?.addEventListener('click', e => {
   const target: HTMLElement = e.target as HTMLElement;
-  const options: Array<HTMLElement> = [];
   let direction;
   const column = +(target.getAttribute('data-column') as string);
   const row = +(target.getAttribute('data-row') as string);
-
-  const column1 = column - 1;
-  const column2 = column + 1;
-  const column3 = column - 2;
-  const column4 = column + 2;
-  const row1 = row - 1;
-  const row2 = row + 1;
-  const row3 = row - 2;
-  const row4 = row + 2;
-
-  let wall1;
-  let wall2;
-  let wall3;
-  let wall4;
 
   if (
     target.classList.contains('player1') ||
     target.classList.contains('player2')
   ) {
-    if (row1 > -1) {
-      wall1 = document.querySelector(
-        `.cell[data-column='${column}'][data-row='${row1}']`
-      );
-    }
-    if (row2 < 17) {
-      wall2 = document.querySelector(
-        `.cell[data-column='${column}'][data-row='${row2}']`
-      );
-    }
-    if (column1 > -1) {
-      wall3 = document.querySelector(
-        `.cell[data-column='${column1}'][data-row='${row}']`
-      );
-    }
-    if (column2 < 17) {
-      wall4 = document.querySelector(
-        `.cell[data-column='${column2}'][data-row='${row}']`
-      );
-    }
-
-    if (row3 > -1 && wall1 && !wall1?.classList.contains('set'))
-      options.push(
-        document.querySelector(
-          `.cell[data-column='${column}'][data-row='${row3}']`
-        ) as HTMLElement
-      );
-    if (row4 < 17 && wall2 && !wall2?.classList.contains('set'))
-      options.push(
-        document.querySelector(
-          `.cell[data-column='${column}'][data-row='${row4}']`
-        ) as HTMLElement
-      );
-    if (column3 > -1 && wall3 && !wall3?.classList.contains('set'))
-      options.push(
-        document.querySelector(
-          `.cell[data-column='${column3}'][data-row='${row}']`
-        ) as HTMLElement
-      );
-    if (column4 < 17 && wall4 && !wall4?.classList.contains('set'))
-      options.push(
-        document.querySelector(
-          `.cell[data-column='${column4}'][data-row='${row}']`
-        ) as HTMLElement
-      );
-
-    for (let i = 0; i < options.length; i++) {
-      if (
-        !options[i].classList.contains('player1') &&
-        !options[i].classList.contains('player2')
-      ) {
-        options[i].style.backgroundColor === 'rgb(0, 0, 128)'
-          ? (options[i].style.backgroundColor = '#1c1cf0')
-          : (options[i].style.backgroundColor = '#000080');
-      }
-    }
-    emitter.emit(
-      eventTypes.PLAYER_ACTION,
-      Point.create(row, column),
-      direction
+    const options = Array.from(
+      document.getElementsByClassName('option') as HTMLCollectionOf<HTMLElement>
     );
+    for (let i = 0; i < options.length; i++) {
+      options[i].style.backgroundColor === 'rgb(0, 0, 128)'
+        ? (options[i].style.backgroundColor = '#1c1cf0')
+        : (options[i].style.backgroundColor = '#000080');
+    }
   } else if (target.classList.contains('wallv')) {
     direction = Direction.Down;
     emitter.emit(
@@ -239,7 +183,8 @@ document.getElementById('game_container')?.addEventListener('mouseover', e => {
 
   if (
     target.classList.contains('wallv') &&
-    row !== 16 &&
+    p1 &&
+    p2 &&
     !target.classList.contains('set') &&
     !p1.classList.contains('set') &&
     !p2.classList.contains('set')
@@ -249,7 +194,8 @@ document.getElementById('game_container')?.addEventListener('mouseover', e => {
     p2.style.backgroundColor = '#000080';
   } else if (
     target.classList.contains('wallh') &&
-    column !== 16 &&
+    p3 &&
+    p4 &&
     !target.classList.contains('set') &&
     !p3.classList.contains('set') &&
     !p4.classList.contains('set')
@@ -285,6 +231,8 @@ document.getElementById('game_container')?.addEventListener('mouseout', e => {
   if (
     target.classList.contains('wallv') &&
     !target.classList.contains('set') &&
+    p1 &&
+    p2 &&
     !p1.classList.contains('set') &&
     !p2.classList.contains('set')
   ) {
@@ -294,6 +242,8 @@ document.getElementById('game_container')?.addEventListener('mouseout', e => {
   } else if (
     target.classList.contains('wallh') &&
     !target.classList.contains('set') &&
+    p3 &&
+    p4 &&
     !p3.classList.contains('set') &&
     !p4.classList.contains('set')
   ) {

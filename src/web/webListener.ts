@@ -32,7 +32,8 @@ export class WebListener {
       game.players[0].currentPosition.row,
       game.players[1].currentPosition.column,
       game.players[1].currentPosition.row,
-      game.placedWalls
+      game.placedWalls,
+      game.allowedNodesToMove()
     );
     setWallsNumbers({
       playerWallsCount: game.currentPlayer.remainingWallsCount,
