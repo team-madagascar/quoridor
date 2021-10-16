@@ -75,12 +75,18 @@ button {
   background-color: black;
   border: 2px solid black;
   border-radius: 50%;
+  position: relative;
 }
 
 #cell.player2 {
   background-color: white;
   border: 2px solid white;
   border-radius: 50%;
+  position: relative;
+}
+
+.current-player {
+  box-shadow: 0px 0px 4px 6px rgb(213, 47, 255);
 }
 
 .set {

@@ -40,7 +40,8 @@ export const renderBoard = (
   row1: number,
   column2: number,
   row2: number,
-  walls: ReadonlyArray<Wall> = []
+  walls: ReadonlyArray<Wall> = [],
+  currentPlayerIndex: number
 ) => {
   for (let r = 0; r < rows; r++) {
     board[r] = [];
@@ -71,6 +72,7 @@ export const renderBoard = (
       let addPlayer = '';
       if (cell.value === 1) addPlayer = 'player1';
       if (cell.value === 2) addPlayer = 'player2';
+      if (cell.value === currentPlayerIndex) addPlayer += ' current-player';
       if (cell.node) addСlass = 'node';
       if (cell.wallh) addСlass = 'wallh';
       if (cell.wallv) addСlass = 'wallv';
