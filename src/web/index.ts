@@ -106,6 +106,8 @@ export const renderBoard = (
   });
 };
 
+document.querySelector('.restart-button')?.addEventListener('click', () => {});
+
 document.getElementById('game_container')?.addEventListener('click', e => {
   const target: HTMLElement = e.target as HTMLElement;
   const options: Array<HTMLElement> = [];
