@@ -32,6 +32,8 @@ export interface GameView {
   get placedWalls(): ReadonlyArray<Wall>;
 
   canPlaceWall(wall: Wall): boolean;
+
+  get players(): ReadonlyArray<PlayerView>;
 }
 
 export class Game implements GameView {
@@ -48,7 +50,10 @@ export class Game implements GameView {
     if (this._blocker.intersectPlacedWalls(wall)) {
       return false;
     }
-    if (!this._players.canPlayersReachFinishPoints()) {
+    this._blocker.placeWall(wall);
+    const canPlayersWin = this._players.canPlayersReachFinishPoints();
+    this._blocker.removeWall(wall);
+    if (!canPlayersWin) {
       return false;
     }
     if (!this.currentPlayer.hasWallsToPlace()) {
@@ -109,14 +114,14 @@ export class Game implements GameView {
 
   get winner(): PlayerView {
     if (this.isGameOver()) {
-      return this._players.currentPlayer;
+      return this._players.currentOpponent;
     }
     throw new Error('Has no winner yet. Game is not over');
   }
 
   get loser(): PlayerView {
     if (this.isGameOver()) {
-      return this.currentOpponent;
+      return this.currentPlayer;
     }
     throw new Error('Has no loser yet. Game is not over');
   }

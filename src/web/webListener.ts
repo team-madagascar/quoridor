@@ -28,10 +28,10 @@ export class WebListener {
 
   onNextStep(game: GameView): Promise<Command> {
     renderBoard(
-      game.currentPlayer.currentPosition.column,
-      game.currentPlayer.currentPosition.row,
-      game.currentOpponent.currentPosition.column,
-      game.currentOpponent.currentPosition.row,
+      game.players[0].currentPosition.column,
+      game.players[0].currentPosition.row,
+      game.players[1].currentPosition.column,
+      game.players[1].currentPosition.row,
       game.placedWalls
     );
     setWallsNumbers({
