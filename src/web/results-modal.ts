@@ -10,12 +10,16 @@ const getResultHTML = (imagePath: string) => `
 </div>
 `;
 
-export const showWinner = (result: PlayerGameResult) => {
+export const showWinner = async (result: PlayerGameResult) => {
   showModal({
     title: ResultModalWindowTitles[result],
     bodyElement: createModalBody(getResultHTML(ResultImagesPath[result])),
   });
-
-  const restartButton = document.getElementById('restart-button');
-  restartButton?.addEventListener('click', () => hideModal());
+  const restartButton = document.getElementById('restart-button')!;
+  return new Promise<void>(resolve => {
+    restartButton.addEventListener('click', () => {
+      hideModal();
+      resolve();
+    });
+  });
 };

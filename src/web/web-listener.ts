@@ -3,13 +3,13 @@ import {emitter, eventTypes} from './emitter';
 import {GameView} from '../domain/core/game';
 import {PlayerGameResult} from '../domain/game-facade';
 import {Command, Commands} from '../domain/command';
-import {Point} from '../domain/core/point';
+import {Direction, Point} from '../domain/core/point';
 import {Wall} from '../domain/core/wall';
-import {Direction} from '../domain/core/point';
-import {showWinner} from './results-modal';
 import {renderBoard} from './index';
+import {GameListener} from '../domain/client';
+import {showWinner} from './results-modal';
 
-export class WebListener {
+export abstract class WebListener implements GameListener {
   onSessionOver() {}
 
   onGameStart(game: GameView): Promise<void> {
@@ -27,9 +27,7 @@ export class WebListener {
     return Promise.resolve();
   }
 
-  onGameOver(result: PlayerGameResult): void {
-    showWinner(result);
-  }
+  abstract onGameOver(result: PlayerGameResult): Promise<void>;
 
   onNextStep(game: GameView): Promise<Command> {
     renderBoard(
@@ -77,5 +75,20 @@ export class WebListener {
 
       emitter.on(eventTypes.PLAYER_ACTION, playerActionHandler);
     });
+  }
+}
+
+export class SinglePlayerWebListener extends WebListener {
+  async onGameOver(result: PlayerGameResult): Promise<void> {
+    await showWinner(result);
+  }
+}
+
+export class TwoPlayersWebListener extends WebListener {
+  async onGameOver(result: PlayerGameResult): Promise<void> {
+    if (result === PlayerGameResult.Victory) {
+      // todo show who is winner
+      await showWinner(result);
+    }
   }
 }

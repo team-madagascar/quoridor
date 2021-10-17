@@ -1,8 +1,9 @@
 import {Bot} from './bot';
 import {GameView} from '../domain/core/game';
 import {Command} from '../domain/command';
+import {GameListener} from '../domain/client';
 
-export class BotListener {
+export class BotListener implements GameListener {
   private bot: Bot | null = null;
 
   onSessionOver() {}
@@ -15,7 +16,7 @@ export class BotListener {
     return Promise.resolve();
   }
 
-  onGameOver(): void {
+  async onGameOver(): Promise<void> {
     this.bot = null;
   }
 

@@ -1,16 +1,21 @@
-import {playerTypes} from './enums/player-types';
+import {PlayerTypes} from './enums/player-types';
 import {emitter, eventTypes} from './emitter';
 import {Direction, Point} from '../domain/core/point';
 import {showSelectMode} from './select-mode-modal';
 import {Wall} from '../domain/core/wall';
 import {Node} from '../domain/core/node';
-import {GameClient} from '../domain/client';
-import {WebListener} from './web-listener';
-import {BotListener} from '../bot/botListener';
+import {GameClient, GameListener} from '../domain/client';
+import {
+  SinglePlayerWebListener,
+  TwoPlayersWebListener,
+  WebListener,
+} from './web-listener';
+import {BotListener} from '../bot/bot-listener';
 import {GameFacade} from '../domain/game-facade';
+import {startGame} from './start-game';
 
-const rows = 17;
-const columns = 17;
+const ROWS = 17;
+const COLUMNS = 17;
 const board: Array<Array<Cell>> = [];
 
 class Cell {
@@ -47,9 +52,9 @@ export const renderBoard = (
   nodes: ReadonlyArray<Node> = [],
   currentPlayerIndex: number
 ) => {
-  for (let r = 0; r < rows; r++) {
+  for (let r = 0; r < ROWS; r++) {
     board[r] = [];
-    for (let c = 0; c < columns; c++) {
+    for (let c = 0; c < COLUMNS; c++) {
       if (r % 2 === 0 && c % 2 !== 0)
         board[r].push(new Cell(c, r, 0, false, true, false));
       else if (r % 2 !== 0 && c % 2 === 0)
@@ -67,9 +72,9 @@ export const renderBoard = (
   gameContainer!.innerHTML = '';
 
   let content = '';
-  for (let r = 0; r < rows; r++) {
+  for (let r = 0; r < ROWS; r++) {
     content += '<div class="row">';
-    for (let c = 0; c < columns; c++) {
+    for (let c = 0; c < COLUMNS; c++) {
       const cell = board[r][c];
 
       let addСlass = '';
@@ -256,12 +261,8 @@ document.getElementById('game_container')?.addEventListener('mouseout', e => {
   }
 });
 
-showSelectMode().then((opponent: playerTypes) => {
-  const player1 = new GameClient('1', new WebListener());
-  const player2 = new GameClient(
-    '2',
-    opponent === playerTypes.COMPUTER ? new BotListener() : new WebListener()
-  );
-
-  GameFacade.start(player1, player2);
-});
+(async () => {
+  for (;;) {
+    await startGame();
+  }
+})();
