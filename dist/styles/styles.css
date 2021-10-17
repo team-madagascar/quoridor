@@ -37,7 +37,7 @@ button {
   display: flex;
 }
 
-#cell, #cell11, #cell01, #cell10 {
+.node, .intersection, .wallh, .wallv {
   text-align: center;
   cursor: pointer;
   transition-property: background-color;
@@ -48,22 +48,22 @@ button {
   font-size: 20px;
 }
 
-#cell11 {
+.intersection {
   width: 15px;
   height: 15px;
 }
 
-#cell01 {
+.wallh {
   width: 30px;
   height: 15px;
 }
 
-#cell10 {
+.wallv {
   width: 15px;
   height: 30px;
 }
 
-#cell {
+.node {
   width: 26px;
   height: 26px;
   border: 2px solid #000080;
@@ -71,14 +71,14 @@ button {
   border-radius: 10%;
 }
 
-#cell.player1 {
+.node.player1 {
   background-color: black;
   border: 2px solid black;
   border-radius: 50%;
   position: relative;
 }
 
-#cell.player2 {
+.node.player2 {
   background-color: white;
   border: 2px solid white;
   border-radius: 50%;
@@ -91,23 +91,4 @@ button {
 
 .set {
   background-color: #000080 !important;
-}
-
-.restart-button-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.restart-button {
-  text-align: center;
-  width: 80px;
-  height: 35px;
-  font-size: 16px;
-  background-color: #000080;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  box-shadow: #000080 0 0 5px;
-  font-weight: 700;
 }

@@ -1,17 +1,7 @@
-import {PlayerTypes} from './enums/player-types';
 import {emitter, eventTypes} from './emitter';
 import {Direction, Point} from '../domain/core/point';
-import {showSelectMode} from './select-mode-modal';
 import {Wall} from '../domain/core/wall';
 import {Node} from '../domain/core/node';
-import {GameClient, GameListener} from '../domain/client';
-import {
-  SinglePlayerWebListener,
-  TwoPlayersWebListener,
-  WebListener,
-} from './web-listener';
-import {BotListener} from '../bot/bot-listener';
-import {GameFacade} from '../domain/game-facade';
 import {startGame} from './start-game';
 
 const ROWS = 17;
@@ -87,16 +77,16 @@ export const renderBoard = (
       if (cell.wallv) addСlass = 'wallv';
 
       if (c % 2 !== 0 && r % 2 !== 0) {
-        content += `<div class='cell ${addСlass}' id='cell11' data-column='${c}'
+        content += `<div class='cell intersection' data-column='${c}'
         data-row='${r}'></div>`;
       } else if (c % 2 === 0 && r % 2 !== 0) {
-        content += `<div class='cell ${addСlass}' id='cell01' data-column='${c}'
+        content += `<div class='cell ${addСlass}' data-column='${c}'
         data-row='${r}'></div>`;
       } else if (c % 2 !== 0 && r % 2 === 0) {
-        content += `<div class='cell ${addСlass}' id='cell10' data-column='${c}'
+        content += `<div class='cell ${addСlass}' data-column='${c}'
         data-row='${r}'></div>`;
       } else if (c % 2 === 0 && r % 2 === 0) {
-        content += `<div class='cell ${addСlass} ${addPlayer}' id='cell' data-column='${c}'
+        content += `<div class='cell ${addСlass} ${addPlayer}' data-column='${c}'
         data-row='${r}'></div>`;
       }
     }
@@ -126,8 +116,6 @@ export const renderBoard = (
     option?.classList.add('option');
   });
 };
-
-document.querySelector('.restart-button')?.addEventListener('click', () => {});
 
 document.getElementById('game_container')?.addEventListener('click', e => {
   const target: HTMLElement = e.target as HTMLElement;
