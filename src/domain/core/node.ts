@@ -11,7 +11,13 @@ export class Node {
 
   canMoveToDirection(direction: Direction): boolean {
     const newPoint = this.position.move(direction, NODE_GAP);
-    return this.isConnectedTo(this._graph.getNode(newPoint));
+    let result: boolean;
+    try {
+      result = this.isConnectedTo(this._graph.getNode(newPoint));
+    } catch (e) {
+      result = false;
+    }
+    return result;
   }
 
   moveToDirection(direction: Direction): Node {

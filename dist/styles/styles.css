@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Farro:wght@400;500;700&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  font-family: 'Farro', sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+.wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+.content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#game_container {
+  float: left;
+  margin: 20px;
+  background-color: royalblue;
+  box-shadow: #000080 0 0 30px;
+  border: 10px solid royalblue;
+}
+
+.row {
+  display: flex;
+}
+
+.node, .intersection, .wallh, .wallv {
+  text-align: center;
+  cursor: pointer;
+  transition-property: background-color;
+  transition-duration: 1s;
+  transition-timing-function: ease-out;
+  background-color: royalblue;
+  padding: 4px;
+  font-size: 20px;
+}
+
+.intersection {
+  width: 15px;
+  height: 15px;
+}
+
+.wallh {
+  width: 30px;
+  height: 15px;
+}
+
+.wallv {
+  width: 15px;
+  height: 30px;
+}
+
+.node {
+  width: 26px;
+  height: 26px;
+  border: 2px solid #000080;
+  background-color: #1c1cf0;
+  border-radius: 10%;
+}
+
+.node.player1 {
+  background-color: black;
+  border: 2px solid black;
+  border-radius: 50%;
+  position: relative;
+}
+
+.node.player2 {
+  background-color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  position: relative;
+}
+
+.current-player {
+  box-shadow: 0px 0px 4px 6px rgb(213, 47, 255);
+}
+
+.set {
+  background-color: #d486f8 !important;
+}

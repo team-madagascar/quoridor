@@ -1,10 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quoridor</title> 
+    <link rel="stylesheet" href="./styles/modal.css">
+    <link rel="stylesheet" href="./styles/styles.css">
+    <link rel="stylesheet" href="./styles/title.css">
 </head>
 <body>
+  <div id="modal"></div>
+
+  <div class="title-wrapper">
+    <h1 class="title">Quoridor</h1>
+  </div>
+  
+  <div class="walls-count-wrapper">
+    <div class="opponent-walls-count walls-count">
+      <span class="opponent-walls-count-text"></span>
+      <span class="opponent-walls-count-number"></span>
+    </div>
+    <div class="player-walls-count walls-count">
+      <span class="player-walls-count-text"></span>
+      <span class="player-walls-count-number"></span>
+    </div>
+  </div>
+
+  <div class="wrapper">
+    <div class="content">
+
+        <div class="clearfix">
+          <div id="game_container"></div>
+        </div>
+       
+    </div>
+  </div>
+
+  <script src="bundle.js"></script>
 </body>
-<script src="bundle.js"></script>
 </html>

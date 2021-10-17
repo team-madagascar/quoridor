@@ -1,8 +1,10 @@
-import {resolve, join} from 'path';
+import {join, resolve} from 'path';
+import 'babel-polyfill';
 
 import {Configuration} from 'webpack';
+
 const config: Configuration = {
-  entry: './src/web/index.ts',
+  entry: ['babel-polyfill', './src/web/index.ts'],
   module: {
     rules: [
       {
