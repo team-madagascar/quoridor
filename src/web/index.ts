@@ -77,16 +77,16 @@ export const renderBoard = (
       if (cell.wallv) addСlass = 'wallv';
 
       if (c % 2 !== 0 && r % 2 !== 0) {
-        content += `<div class='cell ${addСlass}' id='cell11' data-column='${c}'
+        content += `<div class='cell intersection' data-column='${c}'
         data-row='${r}'></div>`;
       } else if (c % 2 === 0 && r % 2 !== 0) {
-        content += `<div class='cell ${addСlass}' id='cell01' data-column='${c}'
+        content += `<div class='cell ${addСlass}' data-column='${c}'
         data-row='${r}'></div>`;
       } else if (c % 2 !== 0 && r % 2 === 0) {
-        content += `<div class='cell ${addСlass}' id='cell10' data-column='${c}'
+        content += `<div class='cell ${addСlass}' data-column='${c}'
         data-row='${r}'></div>`;
       } else if (c % 2 === 0 && r % 2 === 0) {
-        content += `<div class='cell ${addСlass} ${addPlayer}' id='cell' data-column='${c}'
+        content += `<div class='cell ${addСlass} ${addPlayer}' data-column='${c}'
         data-row='${r}'></div>`;
       }
     }
@@ -116,8 +116,6 @@ export const renderBoard = (
     option?.classList.add('option');
   });
 };
-
-document.querySelector('.restart-button')?.addEventListener('click', () => {});
 
 document.getElementById('game_container')?.addEventListener('click', e => {
   const target: HTMLElement = e.target as HTMLElement;
