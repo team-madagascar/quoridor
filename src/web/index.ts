@@ -1,11 +1,13 @@
 import {playerTypes} from './enums/playerTypes';
-import {startGame} from './../domain/test';
 import {emitter, eventTypes} from './emitter';
-import {Point} from '../domain/core/point';
-import {Direction} from '../domain/core/point';
+import {Direction, Point} from '../domain/core/point';
 import {showSelectMode} from './selectModeModal';
 import {Wall} from '../domain/core/wall';
 import {Node} from '../domain/core/node';
+import {GameClient} from '../domain/client';
+import {WebListener} from './webListener';
+import {BotListener} from '../bot/botListener';
+import {GameFacade} from '../domain/game-facade';
 
 const rows = 17;
 const columns = 17;
@@ -255,5 +257,11 @@ document.getElementById('game_container')?.addEventListener('mouseout', e => {
 });
 
 showSelectMode().then((opponent: playerTypes) => {
-  startGame(opponent);
+  const player1 = new GameClient('1', new WebListener());
+  const player2 = new GameClient(
+    '2',
+    opponent === playerTypes.COMPUTER ? new BotListener() : new WebListener()
+  );
+
+  GameFacade.start(player1, player2);
 });
