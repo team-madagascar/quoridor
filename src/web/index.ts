@@ -1,17 +1,7 @@
-import {PlayerTypes} from './enums/player-types';
 import {emitter, eventTypes} from './emitter';
 import {Direction, Point} from '../domain/core/point';
-import {showSelectMode} from './select-mode-modal';
 import {Wall} from '../domain/core/wall';
 import {Node} from '../domain/core/node';
-import {GameClient, GameListener} from '../domain/client';
-import {
-  SinglePlayerWebListener,
-  TwoPlayersWebListener,
-  WebListener,
-} from './web-listener';
-import {BotListener} from '../bot/bot-listener';
-import {GameFacade} from '../domain/game-facade';
 import {startGame} from './start-game';
 
 const ROWS = 17;
@@ -197,9 +187,9 @@ document.getElementById('game_container')?.addEventListener('mouseover', e => {
     !p1.classList.contains('set') &&
     !p2.classList.contains('set')
   ) {
-    target.style.backgroundColor = '#000080';
-    p1.style.backgroundColor = '#000080';
-    p2.style.backgroundColor = '#000080';
+    target.style.backgroundColor = 'rgb(137, 19, 192)';
+    p1.style.backgroundColor = 'rgb(137, 19, 192)';
+    p2.style.backgroundColor = 'rgb(137, 19, 192)';
   } else if (
     target.classList.contains('wallh') &&
     p3 &&
@@ -208,9 +198,9 @@ document.getElementById('game_container')?.addEventListener('mouseover', e => {
     !p3.classList.contains('set') &&
     !p4.classList.contains('set')
   ) {
-    target.style.backgroundColor = '#000080';
-    p3.style.backgroundColor = '#000080';
-    p4.style.backgroundColor = '#000080';
+    target.style.backgroundColor = 'rgb(137, 19, 192)';
+    p3.style.backgroundColor = 'rgb(137, 19, 192)';
+    p4.style.backgroundColor = 'rgb(137, 19, 192)';
   }
 });
 

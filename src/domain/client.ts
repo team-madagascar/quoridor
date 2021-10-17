@@ -1,14 +1,16 @@
+import {PlayersId} from './../web/enums/players-id';
 import {Command} from './command';
 import {PlayerGameResult} from './game-facade';
 import {GameView} from './core/game';
 
 export class GameClient {
-  constructor(
-    private readonly _id: string,
-    private readonly gameListener: GameListener
-  ) {}
+  private readonly _id: PlayersId;
 
-  get id(): string {
+  constructor(private readonly gameListener: GameListener) {
+    this._id = this.gameListener.id;
+  }
+
+  get id(): PlayersId {
     return this._id;
   }
 
@@ -18,6 +20,8 @@ export class GameClient {
 }
 
 export interface GameListener {
+  id: PlayersId;
+
   onGameStart(game: GameView): Promise<void>;
 
   onNextStep(game: GameView): Promise<Command>;

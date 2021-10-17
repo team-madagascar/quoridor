@@ -1,5 +1,5 @@
 export enum wallsCountTitle {
   COMPUTER = 'Computer walls: ',
-  OTHER_PLAYER = 'Opponent walls: ',
-  CURRENT_PLAYER = 'Player walls: ',
+  OTHER_PLAYER = 'Second player walls: ',
+  CURRENT_PLAYER = 'First player walls: ',
 }

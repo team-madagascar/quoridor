@@ -1,3 +1,4 @@
+import {PlayersId} from './../web/enums/players-id';
 import {Bot} from './bot';
 import {GameView} from '../domain/core/game';
 import {Command} from '../domain/command';
@@ -5,6 +6,8 @@ import {GameListener} from '../domain/client';
 
 export class BotListener implements GameListener {
   private bot: Bot | null = null;
+
+  constructor(public id: PlayersId) {}
 
   onSessionOver() {}
 

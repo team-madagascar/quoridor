@@ -1,3 +1,4 @@
+import {PlayersId} from './enums/players-id';
 import {setWallsNumbers} from './helpers/set-walls-numbers';
 import {emitter, eventTypes} from './emitter';
 import {GameView} from '../domain/core/game';
@@ -7,9 +8,11 @@ import {Direction, Point} from '../domain/core/point';
 import {Wall} from '../domain/core/wall';
 import {renderBoard} from './index';
 import {GameListener} from '../domain/client';
-import {showWinner} from './results-modal';
+import {showWinner, showWinnerForTwoPlayers} from './results-modal';
 
 export abstract class WebListener implements GameListener {
+  constructor(public id: PlayersId) {}
+
   onSessionOver() {}
 
   onGameStart(game: GameView): Promise<void> {
@@ -20,9 +23,7 @@ export abstract class WebListener implements GameListener {
       game.currentOpponent.currentPosition.row,
       game.placedWalls,
       game.allowedNodesToMove(),
-      game.currentPlayer.currentPosition === game.players[0].currentPosition
-        ? 1
-        : 2
+      this.id
     );
     return Promise.resolve();
   }
@@ -37,9 +38,7 @@ export abstract class WebListener implements GameListener {
       game.players[1].currentPosition.row,
       game.placedWalls,
       game.allowedNodesToMove(),
-      game.currentPlayer.currentPosition === game.players[0].currentPosition
-        ? 1
-        : 2
+      this.id
     );
     setWallsNumbers({
       playerWallsCount: game.currentPlayer.remainingWallsCount,
@@ -87,8 +86,7 @@ export class SinglePlayerWebListener extends WebListener {
 export class TwoPlayersWebListener extends WebListener {
   async onGameOver(result: PlayerGameResult): Promise<void> {
     if (result === PlayerGameResult.Victory) {
-      // todo show who is winner
-      await showWinner(result);
+      await showWinnerForTwoPlayers(this.id);
     }
   }
 }
