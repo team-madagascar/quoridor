@@ -1,11 +1,11 @@
-import {playerTypes} from './enums/playerTypes';
+import {playerTypes} from './enums/player-types';
 import {emitter, eventTypes} from './emitter';
 import {Direction, Point} from '../domain/core/point';
-import {showSelectMode} from './selectModeModal';
+import {showSelectMode} from './select-mode-modal';
 import {Wall} from '../domain/core/wall';
 import {Node} from '../domain/core/node';
 import {GameClient} from '../domain/client';
-import {WebListener} from './webListener';
+import {WebListener} from './web-listener';
 import {BotListener} from '../bot/botListener';
 import {GameFacade} from '../domain/game-facade';
 

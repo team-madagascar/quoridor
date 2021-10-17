@@ -1,4 +1,4 @@
-import {setWallsNumbers} from './helpers/setWallsNumbers';
+import {setWallsNumbers} from './helpers/set-walls-numbers';
 import {emitter, eventTypes} from './emitter';
 import {GameView} from '../domain/core/game';
 import {PlayerGameResult} from '../domain/game-facade';
@@ -6,7 +6,7 @@ import {Command, Commands} from '../domain/command';
 import {Point} from '../domain/core/point';
 import {Wall} from '../domain/core/wall';
 import {Direction} from '../domain/core/point';
-import {showWinner} from './resultsModal';
+import {showWinner} from './results-modal';
 import {renderBoard} from './index';
 
 export class WebListener {

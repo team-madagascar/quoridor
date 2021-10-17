@@ -1,7 +1,7 @@
 import {PlayerGameResult} from '../domain/game-facade';
 import {showModal, createModalBody, hideModal} from './modal';
-import {ResultModalWindowTitles} from './enums/modalWindowTitles';
-import {ResultImagesPath} from './enums/resultImagesPath';
+import {ResultModalWindowTitles} from './enums/modal-window-titles';
+import {ResultImagesPath} from './enums/result-images-path';
 
 const getResultHTML = (imagePath: string) => `
 <div class="result-image-wrapper">

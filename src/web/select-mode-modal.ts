@@ -1,9 +1,9 @@
 import {emitter, eventTypes} from './emitter';
 import {showModal, createModalBody, hideModal} from './modal';
-import {SelectModeModalWindowTitles} from './enums/modalWindowTitles';
-import {playerTypes} from './enums/playerTypes';
-import {wallsCountTitle} from './enums/wallsCountTitle';
-import {setWallsNumbers} from './helpers/setWallsNumbers';
+import {SelectModeModalWindowTitles} from './enums/modal-window-titles';
+import {playerTypes} from './enums/player-types';
+import {wallsCountTitle} from './enums/walls-count-title';
+import {setWallsNumbers} from './helpers/set-walls-numbers';
 
 const SELECT_MODE_HTML = `
 <div class="select-mode">

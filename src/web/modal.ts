@@ -1,4 +1,4 @@
-import {createElement} from './helpers/domHelper';
+import {createElement} from './helpers/dom-helper';
 
 interface ModalParams {
   title: string;
