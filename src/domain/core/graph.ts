@@ -31,6 +31,10 @@ export class Graph {
     return node;
   }
 
+  hasNode(point: Point): boolean {
+    return this._nodes.has(point);
+  }
+
   searchBFS(from: Node, searchPredicate: (node: Node) => boolean): boolean {
     const queue: Node[] = [from];
     const visited = new Set<Node>();

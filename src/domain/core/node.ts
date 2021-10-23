@@ -11,25 +11,17 @@ export class Node {
 
   canMoveToDirection(direction: Direction): boolean {
     const newPoint = this.position.move(direction, NODE_GAP);
-    let result: boolean;
-    try {
-      result = this.isConnectedTo(this._graph.getNode(newPoint));
-    } catch (e) {
-      result = false;
-    }
-    return result;
+    if (!this._graph.hasNode(newPoint)) return false;
+    return this.isConnectedTo(this._graph.getNode(newPoint));
   }
 
-  moveToDirection(direction: Direction): Node {
+  moveToDirection(direction: Direction): Node | undefined {
     const newPosition = this.position.move(direction, NODE_GAP);
+    if (!this._graph.hasNode(newPosition)) return undefined;
     if (this.isConnectedTo(this._graph.getNode(newPosition))) {
       return this._graph.getNode(newPosition);
     }
-    throw new Error(
-      `Can't move from: ${JSON.stringify(this.position)}, to: ${JSON.stringify(
-        newPosition
-      )}`
-    );
+    return undefined;
   }
 
   search(endWalkPredicate: (node: Node) => boolean): boolean {

@@ -7,6 +7,7 @@ import {Players} from './players';
 import {Graph} from './graph';
 
 export const GAME_GRID_SIZE = 17;
+export const NODE_GAP = 2;
 
 export interface GameView {
   get currentPlayer(): PlayerView;
@@ -26,8 +27,6 @@ export interface GameView {
   get winner(): PlayerView;
 
   get loser(): PlayerView;
-
-  moveToDirection(node: Node, direction: Direction): Node | undefined;
 
   get placedWalls(): ReadonlyArray<Wall>;
 
@@ -103,9 +102,12 @@ export class Game implements GameView {
 
   allowedNodesToMove(): ReadonlyArray<Node> {
     const currentNode = this._players.currentPlayer.currentNode;
-    return Directions.allDirections()
-      .map(d => this.moveToDirection(currentNode, d))
-      .filter(n => n !== undefined) as ReadonlyArray<Node>;
+    const t = Directions.allDirections().map(d =>
+      this.allowedNodesInDirection(currentNode, d)
+    );
+    const result: Node[] = [];
+    t.forEach(nodes => result.push(...nodes));
+    return result;
   }
 
   get players(): ReadonlyArray<PlayerView> {
@@ -143,24 +145,30 @@ export class Game implements GameView {
   }
 
   private movePlayerToDirection(player: Player, direction: Direction) {
-    const newNode = this.moveToDirection(player.currentNode, direction);
-    if (newNode === undefined) {
+    const newNode = this.allowedNodesInDirection(player.currentNode, direction);
+    if (newNode.length === 0) {
       throw new Error(
         `Player "${player.id}" can't make step in direction: ${Direction[direction]}`
       );
     }
-    player.moveTo(newNode);
+    player.moveTo(newNode[0]);
   }
 
-  moveToDirection(node: Node, direction: Direction): Node | undefined {
-    if (!node.canMoveToDirection(direction)) {
-      return undefined;
-    }
+  allowedNodesInDirection(node: Node, direction: Direction): Node[] {
     const newNode = node.moveToDirection(direction);
+    if (newNode === undefined) return [];
     if (this._players.nodeHasPlayer(newNode)) {
-      return this.moveToDirection(newNode, direction);
+      return this.jumpToDirection(newNode, direction, node);
     }
-    return newNode;
+    return [newNode];
+  }
+
+  private jumpToDirection(prev: Node, direction: Direction, start: Node) {
+    const next = prev.moveToDirection(direction);
+    if (next !== undefined) return [next];
+    return Directions.allDirections()
+      .map(d => prev.moveToDirection(d))
+      .filter(n => n !== undefined && n.position !== start.position) as Node[];
   }
 
   private requirePlayersCanReachFinishes(wall: Wall) {
@@ -176,5 +184,3 @@ export class Game implements GameView {
     }
   }
 }
-
-export const NODE_GAP = 2;
