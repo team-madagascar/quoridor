@@ -7,9 +7,9 @@ export class Players {
   private _currentPlayer: Player;
   private readonly _players: [Player, Player];
 
-  constructor(playerId1: string, playerId2: string, graph: Graph) {
-    this._players = this.createPlayers(playerId1, playerId2, graph);
-    this._currentPlayer = this._players[0];
+  constructor(blackPlayer: string, whitePlayer: string, graph: Graph) {
+    this._players = this.createPlayers(blackPlayer, whitePlayer, graph);
+    this._currentPlayer = this._players[1];
   }
 
   somePlayerWin(): boolean {

@@ -40,9 +40,9 @@ export class Game implements GameView {
   private readonly _graph: Graph;
   private readonly _players: Players;
 
-  constructor(playerId1: string, playerId2: string) {
+  constructor(blackPlayer: string, whitePlayer: string) {
     this._graph = new Graph(this._blocker);
-    this._players = new Players(playerId1, playerId2, this._graph);
+    this._players = new Players(blackPlayer, whitePlayer, this._graph);
   }
 
   canPlaceWall(wall: Wall): boolean {

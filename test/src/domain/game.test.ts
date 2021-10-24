@@ -22,10 +22,12 @@ describe('Game', () => {
   let game: Game;
 
   beforeEach(() => {
-    game = new Game('1', '2');
+    game = new Game('B', 'W');
   });
 
   it('should throw error when new wall intersect already placed wall', () => {
+    game.moveCurrentPlayerToDirection(Direction.Up);
+    printGameGridToConsole(game);
     game.placeWall(Wall.create(Point.create(0, 1), Direction.Down));
 
     const f = () =>
