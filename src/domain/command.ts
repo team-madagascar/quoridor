@@ -17,14 +17,10 @@ export class MoveToDirectionCommand implements Command {
 }
 
 export class MoveToNodeCommand implements Command {
-  constructor(readonly node: Node | Point) {}
+  constructor(readonly node: Node) {}
 
   invoke(game: Game): void {
-    if (node instanceof Node) {
-      game.moveCurrentPlayerToNode(this.node as Node);
-    } else if (node instanceof Point) {
-      game.moveCurrentPlayerToNode(game.getNode(node));
-    }
+    game.moveCurrentPlayerToNode(this.node);
   }
 }
 
@@ -41,7 +37,7 @@ export class Commands {
     return new MoveToDirectionCommand(direction);
   }
 
-  static moveToNode(node: Node | Point): Command {
+  static moveToNode(node: Node): Command {
     return new MoveToNodeCommand(node);
   }
 

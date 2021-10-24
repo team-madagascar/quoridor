@@ -1,6 +1,12 @@
-import {Point} from './domain/core/point';
-import {Wall} from './domain/core/wall';
-import {Command, Commands} from './domain/command';
+import {Point} from '../domain/core/point';
+import {Wall} from '../domain/core/wall';
+import {
+  Command,
+  Commands,
+  MoveToNodeCommand,
+  PlaceWallCommand,
+} from '../domain/command';
+import {GameView} from '../domain/core/game';
 
 enum ConsoleCommands {
   move = 'move',
@@ -17,7 +23,9 @@ const NodeLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
 const WallLetters = ['S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 export class KorotenkoAdapter {
-  deserializeCommand(data: string): Command {
+  constructor(private readonly game: GameView) {}
+
+  fromKorotenkoCommand(data: string): Command {
     let column: number;
     let row: number;
     let wall: Wall;
@@ -31,7 +39,9 @@ export class KorotenkoAdapter {
       case ConsoleCommands.move:
         column = NodeLetters.indexOf(coordinate[0]) * 2;
         row = parseInt(coordinate[1]) * 2 - 2;
-        return Commands.moveToNode(Point.create(row, column));
+        return Commands.moveToNode(
+          this.game.getNode(Point.create(row, column))
+        );
       case ConsoleCommands.wall:
         column = WallLetters.indexOf(coordinate[0]) * 2 + 1;
         row = parseInt(coordinate[1]) * 2 - 1;
@@ -52,13 +62,30 @@ export class KorotenkoAdapter {
     }
   }
 
-  serializePoint(point: Point, command: ConsoleCommands): string {
+  toKorotenkoCommand(command: Command): string {
+    if (command instanceof PlaceWallCommand) {
+      return this.serializePlaceWallCommand(command.wall);
+    }
+    if (command instanceof MoveToNodeCommand) {
+      const currentNode = this.currentPlayerNode();
+      const isJump = !currentNode.isNeighbor(command.node);
+      const type = isJump ? ConsoleCommands.jump : ConsoleCommands.move;
+      return this.serializeMoveCommand(command.node.position, type);
+    }
+    throw new Error('Command is not supported: ' + command);
+  }
+
+  private currentPlayerNode() {
+    return this.game.getNode(this.game.currentPlayer.currentPosition);
+  }
+
+  private serializeMoveCommand(point: Point, command: ConsoleCommands): string {
     const letterCoordinate = NodeLetters[point.column / 2];
     const numberCoordinate = String((point.row + 2) / 2);
     return `${command} ${letterCoordinate}${numberCoordinate}`;
   }
 
-  serializeWall(wall: Wall): string {
+  private serializePlaceWallCommand(wall: Wall): string {
     const centerPoint = wall.points[1];
     const consoleCommand = ConsoleCommands.wall;
     const letterCoordinate = WallLetters[(centerPoint.column - 1) / 2];
