@@ -13,10 +13,10 @@ enum ConsoleWallDirections {
   v = 'v',
 }
 
-const LettersNodes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
-const LettersWalls = ['S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+const NodeLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+const WallLetters = ['S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
-class KorotenkoAdapter {
+export class KorotenkoAdapter {
   deserializeCommand(data: string): Command {
     let column: number;
     let row: number;
@@ -29,11 +29,11 @@ class KorotenkoAdapter {
     switch (command) {
       case ConsoleCommands.jump:
       case ConsoleCommands.move:
-        column = LettersNodes.indexOf(coordinate[0]) * 2;
+        column = NodeLetters.indexOf(coordinate[0]) * 2;
         row = parseInt(coordinate[1]) * 2 - 2;
-        return Commands.moveToNode((Point.create(row, column)); // how convert point to node?
+        return Commands.moveToNode(Point.create(row, column));
       case ConsoleCommands.wall:
-        column = LettersWalls.indexOf(coordinate[0]) * 2 + 1;
+        column = WallLetters.indexOf(coordinate[0]) * 2 + 1;
         row = parseInt(coordinate[1]) * 2 - 1;
         if (coordinate[2] === ConsoleWallDirections.h) {
           wall = new Wall([
@@ -52,18 +52,16 @@ class KorotenkoAdapter {
     }
   }
 
-  serializePoint(point: Point, isMove: boolean): string { // need smth to understand if point is jump or move
-    const consoleCommand = isMove ? ConsoleCommands.move : ConsoleCommands.jump;
-    const letterCoordinate = LettersNodes[point.column / 2];
+  serializePoint(point: Point, command: ConsoleCommands): string {
+    const letterCoordinate = NodeLetters[point.column / 2];
     const numberCoordinate = String((point.row + 2) / 2);
-
-    return `${consoleCommand} ${letterCoordinate}${numberCoordinate}`;
+    return `${command} ${letterCoordinate}${numberCoordinate}`;
   }
 
   serializeWall(wall: Wall): string {
     const centerPoint = wall.points[1];
     const consoleCommand = ConsoleCommands.wall;
-    const letterCoordinate = LettersWalls[(centerPoint.column - 1) / 2];
+    const letterCoordinate = WallLetters[(centerPoint.column - 1) / 2];
     const numberCoordinate = String((centerPoint.row + 1) / 2);
     const wallDirection =
       wall.points[0].row === centerPoint.row

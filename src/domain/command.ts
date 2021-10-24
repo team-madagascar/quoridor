@@ -1,7 +1,8 @@
 import {Game} from './core/game';
-import {Direction} from './core/point';
+import {Direction, Point} from './core/point';
 import {Wall} from './core/wall';
 import {Node} from './core/node';
+import {node} from 'webpack';
 
 export interface Command {
   invoke(game: Game): void;
@@ -16,10 +17,14 @@ export class MoveToDirectionCommand implements Command {
 }
 
 export class MoveToNodeCommand implements Command {
-  constructor(readonly node: Node) {}
+  constructor(readonly node: Node | Point) {}
 
   invoke(game: Game): void {
-    game.moveCurrentPlayerToNode(this.node);
+    if (node instanceof Node) {
+      game.moveCurrentPlayerToNode(this.node as Node);
+    } else if (node instanceof Point) {
+      game.moveCurrentPlayerToNode(game.getNode(node));
+    }
   }
 }
 
@@ -36,7 +41,7 @@ export class Commands {
     return new MoveToDirectionCommand(direction);
   }
 
-  static moveToNode(node: Node): Command {
+  static moveToNode(node: Node | Point): Command {
     return new MoveToNodeCommand(node);
   }
 
