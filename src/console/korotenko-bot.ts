@@ -7,7 +7,7 @@ export class KorotenkoBot {
     terminal: false,
   });
 
-  sendStep(data: string) {
+  sendCommand(data: string) {
     this.rl.write(data + '\n');
   }
 

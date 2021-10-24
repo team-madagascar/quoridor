@@ -10,8 +10,8 @@ const korotenko = new KorotenkoBot();
 
 const doStep = () => {
   const command = bot.doStep(game);
-  const step = adapter.toKorotenkoCommand(command);
-  korotenko.sendStep(step);
+  const korotenkoCommand = adapter.toKorotenkoCommand(command);
+  korotenko.sendCommand(korotenkoCommand);
 };
 
 const processKorotenkoBotStep = (data: string) => {
