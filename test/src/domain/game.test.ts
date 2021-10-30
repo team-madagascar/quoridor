@@ -66,4 +66,14 @@ describe('Game', () => {
     expect(playersAfterTwoSteps[0].currentPosition).toBe(Point.create(8, 8));
     expect(playersAfterTwoSteps[1].currentPosition).toBe(Point.create(6, 8));
   });
+  it('should find shortest distance to', () => {
+    const player = game.currentPlayer;
+    game.moveCurrentPlayerToDirection(Direction.Up);
+    game.placeWall(Wall.create(Point.create(1, 6), Direction.Right));
+    const node = game.getNode(player.currentPosition);
+    const distance = node.shortestDistanceTo(
+      n => player.finishRow === n.position.row
+    );
+    expect(distance).toBe(8);
+  });
 });

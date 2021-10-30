@@ -24,8 +24,26 @@ export class Node {
     return undefined;
   }
 
-  search(endWalkPredicate: (node: Node) => boolean): boolean {
+  walk(endWalkPredicate: (node: Node) => boolean): boolean {
     return this._graph.searchBFS(this, endWalkPredicate);
+  }
+
+  shortestDistanceTo(endPredicate: (node: Node) => boolean): number | null {
+    const queue: {distance: number; node: Node}[] = [{distance: 0, node: this}];
+    const visited = new Set<Node>();
+    while (queue.length !== 0) {
+      const {distance: currDistance, node: currNode} = queue.shift()!;
+      if (endPredicate(currNode)) {
+        return currDistance;
+      }
+      currNode.connectedNodes
+        .filter(n => !visited.has(n))
+        .forEach(nextNode => {
+          visited.add(nextNode);
+          queue.push({distance: currDistance + 1, node: nextNode});
+        });
+    }
+    return null;
   }
 
   hasAnyPathTo(target: Node): boolean {

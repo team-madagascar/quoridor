@@ -62,7 +62,7 @@ export class Player implements PlayerView {
   }
 
   canReachFinishPoint(): boolean {
-    return this.currentNode.search(n => this.isFinishNode(n));
+    return this.currentNode.walk(n => this.isFinishNode(n));
   }
 
   takeWall() {
