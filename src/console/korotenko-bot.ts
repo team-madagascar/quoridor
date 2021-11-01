@@ -8,7 +8,7 @@ export class KorotenkoBot {
   });
 
   sendCommand(data: string) {
-    this.rl.write(data + '\n');
+    console.log(data);
   }
 
   setListener(listener: (data: string) => void) {
