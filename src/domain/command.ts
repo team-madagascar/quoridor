@@ -1,8 +1,7 @@
 import {Game} from './core/game';
-import {Direction, Point} from './core/point';
+import {Direction} from './core/point';
 import {Wall} from './core/wall';
 import {Node} from './core/node';
-import {node} from 'webpack';
 
 export interface Command {
   invoke(game: Game): void;

@@ -2,27 +2,13 @@ import {Game} from '../../../src/domain/core/game';
 import {Direction, Point} from '../../../src/domain/core/point';
 import {Wall} from '../../../src/domain/core/wall';
 import {printGameGridToConsole} from '../utils/utils';
-
-const makeSecondPlayerWin = (game: Game) => {
-  for (let i = 0; i < 7; i++) {
-    game.moveCurrentPlayerToDirection(Direction.Down);
-    game.moveCurrentPlayerToDirection(Direction.Up);
-  }
-};
-
-const movePlayersToCenter = (game: Game) => {
-  for (let i = 0; i < 3; i++) {
-    game.moveCurrentPlayerToDirection(Direction.Down);
-    game.moveCurrentPlayerToDirection(Direction.Up);
-  }
-  game.moveCurrentPlayerToDirection(Direction.Down);
-};
+import {Players} from '../../../src/domain/core/players';
 
 describe('Game', () => {
   let game: Game;
 
   beforeEach(() => {
-    game = new Game('B', 'W');
+    game = new Game();
   });
 
   it('should throw error when new wall intersect already placed wall', () => {
@@ -35,10 +21,12 @@ describe('Game', () => {
   });
 
   it('should throw error when players can`t reach their finishes', () => {
-    game.moveCurrentPlayerToDirection(Direction.Down);
-    game.placeWall(Wall.create(Point.create(0, 7), Direction.Down));
-    game.placeWall(Wall.create(Point.create(3, 8), Direction.Right));
-
+    game = new Game({
+      walls: [
+        Wall.create(Point.create(0, 7), Direction.Down),
+        Wall.create(Point.create(3, 8), Direction.Right),
+      ],
+    });
     const f = () =>
       game.placeWall(Wall.create(Point.create(0, 11), Direction.Down));
 
@@ -46,7 +34,11 @@ describe('Game', () => {
   });
 
   it('should throw error when game is finished', () => {
-    makeSecondPlayerWin(game);
+    game = new Game({
+      players: {
+        black: {startPos: Point.create(Players.FINISH_ROW_BLACK, 0)},
+      },
+    });
 
     const f = () => game.moveCurrentPlayerToDirection(Direction.Down);
 
@@ -54,7 +46,12 @@ describe('Game', () => {
   });
 
   it('should make two steps when can`t do one step', () => {
-    movePlayersToCenter(game);
+    game = new Game({
+      players: {
+        black: {startPos: Point.create(8, 8)},
+        white: {startPos: Point.create(10, 8)},
+      },
+    });
 
     const playersBeforeTwoSteps = game.players;
     expect(playersBeforeTwoSteps[0].currentPosition).toBe(Point.create(8, 8));

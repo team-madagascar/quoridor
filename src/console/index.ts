@@ -3,7 +3,7 @@ import {SmartBot} from './smart-bot';
 import {KorotenkoBot} from './korotenko-bot';
 import {KorotenkoAdapter} from './korotenko-adapter';
 
-const game = new Game('black', 'white');
+const game = new Game();
 const adapter = new KorotenkoAdapter(game);
 const bot = new SmartBot();
 const korotenko = new KorotenkoBot();

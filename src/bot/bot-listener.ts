@@ -7,7 +7,7 @@ import {GameListener} from '../domain/client';
 export class BotListener implements GameListener {
   private bot: Bot | null = null;
 
-  constructor(public id: PlayersId) {}
+  constructor(public id: string) {}
 
   onSessionOver() {}
 

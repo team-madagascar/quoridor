@@ -29,5 +29,6 @@ export const printGameGridToConsole = (game: Game) => {
       grid[point.row][point.column] = ' ';
     }
   }
+  console.log(`Current player: ${game.currentPlayer.id}`);
   console.table(grid);
 };

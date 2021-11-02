@@ -2,14 +2,39 @@ import {Player} from './player';
 import {Point} from './point';
 import {Node} from './node';
 import {Graph} from './graph';
+import {PlayerConstructor, PlayersConstructor} from './game';
 
 export class Players {
   private _currentPlayer: Player;
-  private readonly _players: [Player, Player];
+  private _players: [Player, Player];
 
-  constructor(blackPlayer: string, whitePlayer: string, graph: Graph) {
-    this._players = this.createPlayers(blackPlayer, whitePlayer, graph);
+  static readonly FINISH_ROW_BLACK = 8 * 2;
+  static readonly FINISH_ROW_WHITE = 0;
+
+  readonly START_POS_BLACK = Point.create(0, 4).scale(2);
+  readonly START_POS_WHITE = Point.create(8, 4).scale(2);
+
+  constructor(players: PlayersConstructor | undefined, graph: Graph) {
+    if (players === undefined) {
+      this.createDefaultPlayers(graph);
+    } else {
+      this.createPlayers(players, graph);
+    }
     this._currentPlayer = this._players[1];
+  }
+
+  private createPlayers(players: PlayersConstructor, graph: Graph) {
+    const p1 = new Player(
+      graph.getNode(players.black?.startPos || this.START_POS_BLACK)!,
+      Players.FINISH_ROW_BLACK,
+      players.black?.id || 'B'
+    );
+    const p2 = new Player(
+      graph.getNode(players.white?.startPos || this.START_POS_WHITE)!,
+      Players.FINISH_ROW_WHITE,
+      players.white?.id || 'W'
+    );
+    this._players = [p1, p2];
   }
 
   somePlayerWin(): boolean {
@@ -54,18 +79,18 @@ export class Players {
     return player;
   }
 
-  private createPlayers(
-    playerId1: string,
-    playerId2: string,
-    graph: Graph
-  ): [Player, Player] {
-    const finishRow1 = 8 * 2;
-    const finishRow2 = 0;
-    const startPos1 = Point.create(0, 4).scale(2);
-    const startPos2 = Point.create(8, 4).scale(2);
-    return [
-      new Player(graph.getNode(startPos1)!, finishRow1, playerId1),
-      new Player(graph.getNode(startPos2)!, finishRow2, playerId2),
+  private createDefaultPlayers(graph: Graph) {
+    this._players = [
+      new Player(
+        graph.getNode(this.START_POS_BLACK)!,
+        Players.FINISH_ROW_BLACK,
+        'B'
+      ),
+      new Player(
+        graph.getNode(this.START_POS_WHITE)!,
+        Players.FINISH_ROW_WHITE,
+        'W'
+      ),
     ];
   }
 }

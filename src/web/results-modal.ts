@@ -1,4 +1,3 @@
-import {PlayersId} from './enums/players-id';
 import {PlayerGameResult} from '../domain/game-facade';
 import {showModal, createModalBody, hideModal} from './modal';
 import {
@@ -28,7 +27,7 @@ export const showWinner = async (result: PlayerGameResult) => {
   });
 };
 
-export const showWinnerForTwoPlayers = async (playerId: PlayersId) => {
+export const showWinnerForTwoPlayers = async (playerId: string) => {
   showModal({
     title: ResultModalWindowTitlesForTwoPlayers[playerId],
     bodyElement: createModalBody(

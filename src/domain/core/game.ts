@@ -35,14 +35,32 @@ export interface GameView {
   get players(): ReadonlyArray<PlayerView>;
 }
 
+export type PlayerConstructor = {
+  id?: string | undefined;
+  startPos?: Point | undefined;
+};
+
+export type PlayersConstructor = {
+  black?: PlayerConstructor | undefined;
+  white?: PlayerConstructor | undefined;
+};
+
+export interface GameConstructor {
+  walls?: Wall[] | undefined;
+  players?: PlayersConstructor | undefined;
+}
+
 export class Game implements GameView {
   private readonly _blocker = new ConnectionBlocker();
   private readonly _graph: Graph;
   private readonly _players: Players;
 
-  constructor(blackPlayer: string, whitePlayer: string) {
+  constructor(constructor: GameConstructor = {} as GameConstructor) {
     this._graph = new Graph(this._blocker);
-    this._players = new Players(blackPlayer, whitePlayer, this._graph);
+    if (constructor.walls !== undefined) {
+      constructor.walls.forEach(w => this._blocker.placeWall(w));
+    }
+    this._players = new Players(constructor.players, this._graph);
   }
 
   canPlaceWall(wall: Wall): boolean {
