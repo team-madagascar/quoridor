@@ -10,11 +10,11 @@ export const estimateFunction = (game: GameView) => {
   const currentPlayerShortestDistance: number =
     currentPlayerPositionNode.shortestDistanceTo(
       n => currentPlayer.finishRow === n.position.row
-    ) as number;
+    )?.currDistance as number;
   const opponentShortestDistance: number =
     opponentPositionNode.shortestDistanceTo(
       n => currentOpponent.finishRow === n.position.row
-    ) as number;
+    )?.currDistance as number;
 
   const estimate = opponentShortestDistance - currentPlayerShortestDistance;
 

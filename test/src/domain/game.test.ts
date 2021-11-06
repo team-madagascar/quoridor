@@ -73,7 +73,8 @@ describe('Game', () => {
     const node = game.getNode(player.currentPosition);
     const distance = node.shortestDistanceTo(
       n => player.finishRow === n.position.row
-    );
+    )?.currDistance;
+    console.log(distance);
     expect(distance).toBe(8);
   });
 });
