@@ -28,19 +28,33 @@ export class Node {
     return this._graph.searchBFS(this, endWalkPredicate);
   }
 
-  shortestDistanceTo(endPredicate: (node: Node) => boolean): number | null {
-    const queue: {distance: number; node: Node}[] = [{distance: 0, node: this}];
+  shortestDistanceTo(endPredicate: (node: Node) => boolean): {
+    currDistance: number;
+    previousNodes: Node[];
+  } | null {
+    const queue: {distance: number; node: Node; previousNodes: Node[]}[] = [
+      {distance: 0, node: this, previousNodes: []},
+    ];
     const visited = new Set<Node>();
     while (queue.length !== 0) {
-      const {distance: currDistance, node: currNode} = queue.shift()!;
+      const currentNodeObj = queue.shift()!;
+      const {
+        distance: currDistance,
+        node: currNode,
+        previousNodes,
+      } = currentNodeObj;
       if (endPredicate(currNode)) {
-        return currDistance;
+        return {currDistance, previousNodes};
       }
       currNode.connectedNodes
         .filter(n => !visited.has(n))
         .forEach(nextNode => {
           visited.add(nextNode);
-          queue.push({distance: currDistance + 1, node: nextNode});
+          queue.push({
+            distance: currDistance + 1,
+            node: nextNode,
+            previousNodes: [...currentNodeObj.previousNodes, currNode],
+          });
         });
     }
     return null;
