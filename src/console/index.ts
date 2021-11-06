@@ -3,8 +3,8 @@ import {SmartBot} from './smart-bot';
 import {KorotenkoBot} from './korotenko-bot';
 import {KorotenkoAdapter} from './korotenko-adapter';
 import {LOGGER} from './logger';
-LOGGER.isActive = false;
 
+LOGGER.isActive = false;
 LOGGER.clearSavedLog();
 
 const game = new Game();

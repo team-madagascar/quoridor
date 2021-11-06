@@ -164,6 +164,10 @@ export class Game implements GameView {
     return this._blocker.isBlocked(point);
   }
 
+  copy(): Game {
+    return JSON.parse(JSON.stringify(this));
+  }
+
   private movePlayerToDirection(player: Player, direction: Direction) {
     const newNode = this.allowedNodesInDirection(player.currentNode, direction);
     if (newNode.length === 0) {
