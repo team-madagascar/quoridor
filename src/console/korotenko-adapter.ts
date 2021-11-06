@@ -3,6 +3,7 @@ import {Wall} from '../domain/core/wall';
 import {
   Command,
   Commands,
+  MoveToDirectionCommand,
   MoveToNodeCommand,
   PlaceWallCommand,
 } from '../domain/command';
@@ -23,6 +24,27 @@ const NodeLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
 const WallLetters = ['S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 export class KorotenkoAdapter {
+  toKorotenkoCommand(command: Command): string {
+    if (command instanceof PlaceWallCommand) {
+      return this.serializePlaceWallCommand(command.wall);
+    }
+    if (command instanceof MoveToNodeCommand) {
+      const currentNode = this.currentPlayerNode();
+      const isJump = !currentNode.isNeighbor(command.node);
+      const type = isJump ? ConsoleCommands.jump : ConsoleCommands.move;
+      return this.serializeMoveCommand(command.node.position, type);
+    }
+    const c = command as MoveToDirectionCommand;
+    const nodes = this.game.allowedNodesInDirection(
+      this.game.getNode(this.game.currentPlayer.currentPosition),
+      c.direction
+    );
+    if (nodes.length === 0) {
+      throw new Error('Command is not supported: ' + command);
+    }
+
+    return this.toKorotenkoCommand(Commands.moveToNode(nodes[0]));
+  }
   constructor(private readonly game: GameView) {}
 
   fromKorotenkoCommand(data: string): Command {
@@ -60,19 +82,6 @@ export class KorotenkoAdapter {
         }
         return Commands.placeWall(wall);
     }
-  }
-
-  toKorotenkoCommand(command: Command): string {
-    if (command instanceof PlaceWallCommand) {
-      return this.serializePlaceWallCommand(command.wall);
-    }
-    if (command instanceof MoveToNodeCommand) {
-      const currentNode = this.currentPlayerNode();
-      const isJump = !currentNode.isNeighbor(command.node);
-      const type = isJump ? ConsoleCommands.jump : ConsoleCommands.move;
-      return this.serializeMoveCommand(command.node.position, type);
-    }
-    throw new Error('Command is not supported: ' + command);
   }
 
   private currentPlayerNode() {

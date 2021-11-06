@@ -84,6 +84,10 @@ export class Point {
     }
   }
 
+  toString(): string {
+    return `${this.row}:${this.column}`;
+  }
+
   private plus(deltaRow: number, deltaColumn: number): Point {
     return Point.create(deltaRow + this.row, deltaColumn + this.column);
   }

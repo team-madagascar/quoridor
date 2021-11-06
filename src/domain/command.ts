@@ -5,6 +5,8 @@ import {Node} from './core/node';
 
 export interface Command {
   invoke(game: Game): void;
+
+  toString(): string;
 }
 
 export class MoveToDirectionCommand implements Command {
@@ -12,6 +14,10 @@ export class MoveToDirectionCommand implements Command {
 
   invoke(game: Game): void {
     game.moveCurrentPlayerToDirection(this.direction);
+  }
+
+  toString(): string {
+    return `Move ${Direction[this.direction]}`;
   }
 }
 
@@ -21,6 +27,10 @@ export class MoveToNodeCommand implements Command {
   invoke(game: Game): void {
     game.moveCurrentPlayerToNode(this.node);
   }
+
+  toString(): string {
+    return `Move ${this.node.position.toString()}`;
+  }
 }
 
 export class PlaceWallCommand implements Command {
@@ -28,6 +38,10 @@ export class PlaceWallCommand implements Command {
 
   invoke(game: Game): void {
     game.placeWall(this.wall);
+  }
+
+  toString(): string {
+    return `Wall: ${this.wall.toString()}`;
   }
 }
 

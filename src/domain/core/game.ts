@@ -20,6 +20,8 @@ export interface GameView {
 
   allowedNodesToMove(): ReadonlyArray<Node>;
 
+  allowedNodesInDirection(node: Node, direction: Direction): Node[];
+
   getNode(point: Point): Node;
 
   isGameOver(): boolean;

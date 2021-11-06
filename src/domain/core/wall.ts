@@ -14,6 +14,10 @@ export class Wall {
     return new Wall([point1, point2, point3]);
   }
 
+  toString(): string {
+    return `${this.points[0].toString()}|${this.points[1].toString()}|${this.points[2].toString()}`;
+  }
+
   private requirePointsToBeWithinGameGrid() {
     this.points.forEach(p => p.requireToBeWithinGameGrid());
   }
