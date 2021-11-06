@@ -1,18 +1,18 @@
 import {PlayersId} from './../web/enums/players-id';
-import {Bot} from './bot';
+import {RandomBot} from './bot';
 import {GameView} from '../domain/core/game';
 import {Command} from '../domain/command';
 import {GameListener} from '../domain/client';
 
 export class BotListener implements GameListener {
-  private bot: Bot | null = null;
+  private bot: RandomBot | null = null;
 
   constructor(public id: string) {}
 
   onSessionOver() {}
 
   onGameStart(game: GameView): Promise<void> {
-    this.bot = new Bot(
+    this.bot = new RandomBot(
       game.currentPlayer.currentPosition,
       game.currentPlayer.remainingWallsCount
     );

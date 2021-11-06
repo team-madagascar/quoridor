@@ -18,7 +18,7 @@ const orientationsToWallDirections: Record<OrientationTypes, Direction> = {
 
 const orientations = [OrientationTypes.Horizontal, OrientationTypes.Vertical];
 
-export class Bot {
+export class RandomBot {
   currentField: Array<Array<Point>> | null = null;
 
   constructor(private position: Point, private wallsCount: number) {}

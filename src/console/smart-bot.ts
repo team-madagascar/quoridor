@@ -1,9 +1,9 @@
 import {GameView} from '../domain/core/game';
-import {Command} from '../domain/command';
-import {Bot} from '../bot/bot';
+import {Command, Commands} from '../domain/command';
+import {RandomBot} from '../bot/bot';
 
 export class SmartBot {
-  private readonly bot = new Bot(
+  private readonly bot = new RandomBot(
     this.game.currentPlayer.currentPosition,
     this.game.currentPlayer.remainingWallsCount
   );
@@ -11,9 +11,6 @@ export class SmartBot {
   constructor(private readonly game: GameView) {}
 
   doStep(gameView: GameView): Command {
-    return this.bot.randomMove(
-      gameView.allowedNodesToMove(),
-      gameView.canPlaceWall.bind(gameView)
-    );
+    return Commands.moveToNode(gameView.allowedNodesToMove()[0]);
   }
 }

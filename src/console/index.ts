@@ -3,6 +3,7 @@ import {SmartBot} from './smart-bot';
 import {KorotenkoBot} from './korotenko-bot';
 import {KorotenkoAdapter} from './korotenko-adapter';
 import {LOGGER} from './logger';
+LOGGER.isActive = false;
 
 LOGGER.clearSavedLog();
 
@@ -17,8 +18,9 @@ const doStep = () => {
     bot = new SmartBot(game);
   }
   const command = bot.doStep(game);
-  LOGGER.info('BOT COMMAND: ' + command.toString());
   const korotenkoCommand = adapter.toKorotenkoCommand(command);
+  command.invoke(game);
+  LOGGER.info('BOT COMMAND: ' + command.toString());
   korotenko.sendCommand(korotenkoCommand);
   LOGGER.info('OUTPUT: ' + korotenkoCommand);
 };
@@ -32,6 +34,9 @@ const applyKorotenkoBotStep = (data: string) => {
 korotenko.setListener(input => {
   LOGGER.info('INPUT: ' + input);
   try {
+    if (game.isGameOver()) {
+      return;
+    }
     switch (input) {
       case 'white': {
         doStep();
@@ -49,6 +54,12 @@ korotenko.setListener(input => {
     LOGGER.info('Error: ');
     LOGGER.info(e);
   } finally {
+    if (game.isGameOver()) {
+      LOGGER.info('Game is over');
+      LOGGER.info('Winner: ' + game.winner.id);
+      // eslint-disable-next-line no-process-exit
+      process.exit(200);
+    }
     LOGGER.persist();
   }
 });

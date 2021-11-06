@@ -17,7 +17,7 @@ export class MoveToDirectionCommand implements Command {
   }
 
   toString(): string {
-    return `Move ${Direction[this.direction]}`;
+    return `move ${Direction[this.direction]}`;
   }
 }
 
@@ -29,7 +29,7 @@ export class MoveToNodeCommand implements Command {
   }
 
   toString(): string {
-    return `Move ${this.node.position.toString()}`;
+    return `move ${this.node.position.toString()}`;
   }
 }
 
@@ -41,7 +41,7 @@ export class PlaceWallCommand implements Command {
   }
 
   toString(): string {
-    return `Wall: ${this.wall.toString()}`;
+    return `wall: ${this.wall.toString()}`;
   }
 }
 
