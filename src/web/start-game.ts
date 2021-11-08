@@ -5,10 +5,10 @@ import {
   TwoPlayersWebListener,
   WebListener,
 } from './web-listener';
-import {BotListener} from '../bot/bot-listener';
 import {GameFacade} from '../domain/game-facade';
 import {GameClient} from '../domain/client';
 import {PlayersId} from './enums/players-id';
+import {BotListener} from './bot-listener';
 
 export async function startGame() {
   const opponent = await showSelectMode();

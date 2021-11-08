@@ -1,7 +1,7 @@
-import {RandomBot} from './random-bot';
+import {GameListener} from '../domain/client';
+import {RandomBot} from '../bot/random-bot';
 import {GameView} from '../domain/core/game';
 import {Command} from '../domain/command';
-import {GameListener} from '../domain/client';
 
 export class BotListener implements GameListener {
   private bot: RandomBot | null = null;

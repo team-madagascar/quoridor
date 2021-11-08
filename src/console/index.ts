@@ -1,5 +1,5 @@
 import {Game} from '../domain/core/game';
-import {SmartBot} from './smart-bot';
+import {SmartBot} from '../bot/smart-bot';
 import {KorotenkoBot} from './korotenko-bot';
 import {KorotenkoAdapter} from './korotenko-adapter';
 import {LOGGER} from './logger';
