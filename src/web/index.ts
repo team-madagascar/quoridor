@@ -67,26 +67,26 @@ export const renderBoard = (
     for (let c = 0; c < COLUMNS; c++) {
       const cell = board[r][c];
 
-      let addСlass = '';
+      let addClass = '';
       let addPlayer = '';
       if (cell.value === 1) addPlayer = 'player1';
       if (cell.value === 2) addPlayer = 'player2';
       if (cell.value === currentPlayerIndex) addPlayer += ' current-player';
-      if (cell.node) addСlass = 'node';
-      if (cell.wallh) addСlass = 'wallh';
-      if (cell.wallv) addСlass = 'wallv';
+      if (cell.node) addClass = 'node';
+      if (cell.wallh) addClass = 'wallh';
+      if (cell.wallv) addClass = 'wallv';
 
       if (c % 2 !== 0 && r % 2 !== 0) {
         content += `<div class='cell intersection' data-column='${c}'
         data-row='${r}'></div>`;
       } else if (c % 2 === 0 && r % 2 !== 0) {
-        content += `<div class='cell ${addСlass}' data-column='${c}'
+        content += `<div class='cell ${addClass}' data-column='${c}'
         data-row='${r}'></div>`;
       } else if (c % 2 !== 0 && r % 2 === 0) {
-        content += `<div class='cell ${addСlass}' data-column='${c}'
+        content += `<div class='cell ${addClass}' data-column='${c}'
         data-row='${r}'></div>`;
       } else if (c % 2 === 0 && r % 2 === 0) {
-        content += `<div class='cell ${addСlass} ${addPlayer}' data-column='${c}'
+        content += `<div class='cell ${addClass} ${addPlayer}' data-column='${c}'
         data-row='${r}'></div>`;
       }
     }
