@@ -8,7 +8,15 @@ export class Wall {
     this.requireBorderPointsToConnectPlayerNodes();
   }
 
-  static create(point1: Point, direction: Direction) {
+  static tryCreate(point1: Point, direction: Direction): Wall | null {
+    try {
+      return Wall.create(point1, direction);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static create(point1: Point, direction: Direction): Wall {
     const point2 = point1.move(direction, 1);
     const point3 = point1.move(direction, 2);
     return new Wall([point1, point2, point3]);

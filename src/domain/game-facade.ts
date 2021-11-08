@@ -24,7 +24,8 @@ export class GameFacade {
 
   private async startGame(): Promise<void> {
     this._game = new Game({
-      players: {black: {id: this._client1.id}, white: {id: this._client2.id}},
+      currPlayer: {id: this._client1.id},
+      currOpponent: {id: this._client2.id},
     });
     await this.notifyGameStarted();
     while (!this._game.isGameOver()) {

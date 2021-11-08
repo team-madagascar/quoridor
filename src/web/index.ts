@@ -1,7 +1,7 @@
 import {emitter, eventTypes} from './emitter';
 import {Direction, Point} from '../domain/core/point';
 import {Wall} from '../domain/core/wall';
-import {Node} from '../domain/core/node';
+import {GameNode} from '../domain/core/node';
 import {startGame} from './start-game';
 
 const ROWS = 17;
@@ -39,7 +39,7 @@ export const renderBoard = (
   column2: number,
   row2: number,
   walls: ReadonlyArray<Wall> = [],
-  nodes: ReadonlyArray<Node> = [],
+  nodes: ReadonlyArray<GameNode> = [],
   currentPlayerIndex: number
 ) => {
   for (let r = 0; r < ROWS; r++) {

@@ -52,11 +52,14 @@ korotenko.setListener(input => {
     }
   } catch (e) {
     LOGGER.info('Error: ');
-    LOGGER.info(e);
+    LOGGER.info(JSON.stringify(e));
   } finally {
     if (game.isGameOver()) {
       LOGGER.info('Game is over');
       LOGGER.info('Winner: ' + game.winner.id);
+      LOGGER.persist();
+      korotenko.removeListener();
+      LOGGER.persist();
       // eslint-disable-next-line no-process-exit
       process.exit(200);
     }

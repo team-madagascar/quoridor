@@ -1,5 +1,4 @@
-import {PlayersId} from './../web/enums/players-id';
-import {RandomBot} from './bot';
+import {RandomBot} from './random-bot';
 import {GameView} from '../domain/core/game';
 import {Command} from '../domain/command';
 import {GameListener} from '../domain/client';

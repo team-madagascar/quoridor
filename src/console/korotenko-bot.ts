@@ -14,4 +14,8 @@ export class KorotenkoBot {
   setListener(listener: (data: string) => void) {
     this.rl.on('line', listener);
   }
+
+  removeListener() {
+    this.rl.removeAllListeners('line');
+  }
 }

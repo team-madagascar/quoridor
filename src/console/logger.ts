@@ -27,6 +27,9 @@ class Logger {
 
   persist() {
     if (this.isActive) {
+      if (this.logs.length === 0) {
+        return;
+      }
       const data = this.logs.join('\n') + STAGE_DELIMITER;
       this.logs = [];
       try {

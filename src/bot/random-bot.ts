@@ -1,5 +1,5 @@
 import {Command, Commands} from './../domain/command';
-import {Node} from '../domain/core/node';
+import {GameNode} from '../domain/core/node';
 import {Point} from '../domain/core/point';
 import {Wall} from '../domain/core/wall';
 import {Direction} from '../domain/core/point';
@@ -27,12 +27,8 @@ export class RandomBot {
     this.position = position;
   }
 
-  setWallsCount(wallsCount: number) {
-    this.wallsCount = wallsCount;
-  }
-
   randomMove(
-    allowedNodesToMove: ReadonlyArray<Node>,
+    allowedNodesToMove: ReadonlyArray<GameNode>,
     canPlaceWall: (wall: Wall) => boolean
   ): Command {
     if (Math.random() > PROBABILITY_PAWN_MOVE && this.wallsCount > 0) {
@@ -42,7 +38,7 @@ export class RandomBot {
     }
   }
 
-  makeMove(allowedNodesToMove: ReadonlyArray<Node>) {
+  makeMove(allowedNodesToMove: ReadonlyArray<GameNode>) {
     const nodeToMoveIndex = this.randomInteger(
       0,
       allowedNodesToMove.length - 1
@@ -50,10 +46,6 @@ export class RandomBot {
 
     const nextPosition = allowedNodesToMove[nodeToMoveIndex];
     return Commands.moveToNode(nextPosition);
-  }
-
-  setFieldState(field: Array<Array<Point>>) {
-    this.currentField = field;
   }
 
   placeWall(canPlaceWall: (wall: Wall) => boolean): Command {

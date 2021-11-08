@@ -1,7 +1,7 @@
 import {Game} from './core/game';
 import {Direction} from './core/point';
 import {Wall} from './core/wall';
-import {Node} from './core/node';
+import {GameNode} from './core/node';
 
 export interface Command {
   invoke(game: Game): void;
@@ -22,7 +22,7 @@ export class MoveToDirectionCommand implements Command {
 }
 
 export class MoveToNodeCommand implements Command {
-  constructor(readonly node: Node) {}
+  constructor(readonly node: GameNode) {}
 
   invoke(game: Game): void {
     game.moveCurrentPlayerToNode(this.node);
@@ -50,7 +50,7 @@ export class Commands {
     return new MoveToDirectionCommand(direction);
   }
 
-  static moveToNode(node: Node): Command {
+  static moveToNode(node: GameNode): Command {
     return new MoveToNodeCommand(node);
   }
 

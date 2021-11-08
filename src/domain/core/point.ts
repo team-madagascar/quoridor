@@ -1,4 +1,4 @@
-import {GAME_GRID_SIZE} from './game';
+import {GAME_GRID_SIZE} from './node';
 
 export enum Direction {
   Up,

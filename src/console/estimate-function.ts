@@ -1,22 +1,18 @@
 import {GameView} from '../domain/core/game';
 
-export const estimateFunction = (game: GameView) => {
+export const estimateFunction = (game: GameView): number => {
   const currentPlayer = game.currentPlayer;
   const currentOpponent = game.currentOpponent;
 
-  const currentPlayerPositionNode = game.getNode(currentPlayer.currentPosition);
-  const opponentPositionNode = game.getNode(currentOpponent.currentPosition);
+  const playerNode = game.getNode(currentPlayer.currentPosition);
+  const opponentNode = game.getNode(currentOpponent.currentPosition);
 
-  const currentPlayerShortestDistance: number =
-    currentPlayerPositionNode.shortestDistanceTo(
-      n => currentPlayer.finishRow === n.position.row
-    )?.currDistance as number;
-  const opponentShortestDistance: number =
-    opponentPositionNode.shortestDistanceTo(
-      n => currentOpponent.finishRow === n.position.row
-    )?.currDistance as number;
+  const playerShortestDistance: number = playerNode.shortestPathTo(
+    n => currentPlayer.finishRow === n.position.row
+  )?.distance as number;
+  const opponentShortestDistance: number = opponentNode.shortestPathTo(
+    n => currentOpponent.finishRow === n.position.row
+  )?.distance as number;
 
-  const estimate = opponentShortestDistance - currentPlayerShortestDistance;
-
-  return estimate;
+  return opponentShortestDistance - playerShortestDistance;
 };

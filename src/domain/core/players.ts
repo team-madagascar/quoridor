@@ -1,40 +1,45 @@
 import {Player} from './player';
 import {Point} from './point';
-import {Node} from './node';
+import {GameNode} from './node';
 import {Graph} from './graph';
-import {PlayerConstructor, PlayersConstructor} from './game';
+
+export interface PlayerInitialState {
+  startPos?: Point | undefined;
+  finishRow?: number | undefined;
+  id?: string | undefined;
+  wallsCount?: number | undefined;
+}
 
 export class Players {
   private _currentPlayer: Player;
-  private _players: [Player, Player];
+  private readonly _players: [Player, Player];
 
   static readonly FINISH_ROW_BLACK = 8 * 2;
   static readonly FINISH_ROW_WHITE = 0;
 
   readonly START_POS_BLACK = Point.create(0, 4).scale(2);
+
   readonly START_POS_WHITE = Point.create(8, 4).scale(2);
 
-  constructor(players: PlayersConstructor | undefined, graph: Graph) {
-    if (players === undefined) {
-      this.createDefaultPlayers(graph);
-    } else {
-      this.createPlayers(players, graph);
-    }
-    this._currentPlayer = this._players[1];
-  }
-
-  private createPlayers(players: PlayersConstructor, graph: Graph) {
-    const p1 = new Player(
-      graph.getNode(players.black?.startPos || this.START_POS_BLACK)!,
-      Players.FINISH_ROW_BLACK,
-      players.black?.id || 'B'
+  constructor(
+    graph: Graph,
+    currPlayer: PlayerInitialState | undefined = undefined,
+    currOpponent: PlayerInitialState | undefined = undefined
+  ) {
+    const player = new Player(
+      graph.getNode(currPlayer?.startPos || this.START_POS_WHITE)!,
+      currPlayer?.finishRow || Players.FINISH_ROW_WHITE,
+      currPlayer?.id || 'W',
+      currPlayer?.wallsCount || Player.DEFAULT_WALLS_COUNT
     );
-    const p2 = new Player(
-      graph.getNode(players.white?.startPos || this.START_POS_WHITE)!,
-      Players.FINISH_ROW_WHITE,
-      players.white?.id || 'W'
+    const opponent = new Player(
+      graph.getNode(currOpponent?.startPos || this.START_POS_BLACK)!,
+      currOpponent?.finishRow || Players.FINISH_ROW_BLACK,
+      currOpponent?.id || 'B',
+      currOpponent?.wallsCount || Player.DEFAULT_WALLS_COUNT
     );
-    this._players = [p1, p2];
+    this._players = [opponent, player];
+    this._currentPlayer = player;
   }
 
   somePlayerWin(): boolean {
@@ -55,7 +60,7 @@ export class Players {
     return this._currentPlayer;
   }
 
-  nodeHasPlayer(node: Node) {
+  nodeHasPlayer(node: GameNode) {
     return this._players.some(p => p.currentNode === node);
   }
 
@@ -71,26 +76,11 @@ export class Players {
     );
   }
 
-  getPlayer(node: Node): Player {
+  getPlayer(node: GameNode): Player {
     const player = this._players.find(p => p.currentNode === node);
     if (player === undefined) {
       throw new Error(`Node: ${JSON.stringify(node)} has no player`);
     }
     return player;
-  }
-
-  private createDefaultPlayers(graph: Graph) {
-    this._players = [
-      new Player(
-        graph.getNode(this.START_POS_BLACK)!,
-        Players.FINISH_ROW_BLACK,
-        'B'
-      ),
-      new Player(
-        graph.getNode(this.START_POS_WHITE)!,
-        Players.FINISH_ROW_WHITE,
-        'W'
-      ),
-    ];
   }
 }

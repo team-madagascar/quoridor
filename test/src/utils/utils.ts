@@ -1,12 +1,19 @@
-import {Game, GAME_GRID_SIZE} from '../../../src/domain/core/game';
+import {Game} from '../../../src/domain/core/game';
 import {Point} from '../../../src/domain/core/point';
-
+import {GAME_GRID_SIZE, GameNode} from '../../../src/domain/core/node';
 /**
  * '${player id}' - player
  * '#' - wall
  * '*' - player node
  */
-export const printGameGridToConsole = (game: Game) => {
+export const printGameGridToConsole = (
+  game: Game,
+  marker: ((n: GameNode | Point) => string | null) | null = null
+) => {
+  if (marker === null) {
+    marker = () => null;
+  }
+
   const grid: string[][] = [];
   for (let i = 0; i < GAME_GRID_SIZE; i++) {
     grid.push([]);
@@ -24,9 +31,20 @@ export const printGameGridToConsole = (game: Game) => {
           continue;
         }
         grid[point.row][point.column] = '*';
+
+        const newMark = marker(node);
+        if (newMark !== null) {
+          grid[point.row][point.column] = newMark;
+        }
+
         continue;
       }
       grid[point.row][point.column] = ' ';
+
+      const newMark = marker(point);
+      if (newMark !== null) {
+        grid[point.row][point.column] = newMark;
+      }
     }
   }
   console.log(`Current player: ${game.currentPlayer.id}`);

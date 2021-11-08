@@ -36,9 +36,7 @@ describe('Game', () => {
 
   it('should throw error when game is finished', () => {
     game = new Game({
-      players: {
-        black: {startPos: Point.create(Players.FINISH_ROW_BLACK, 0)},
-      },
+      currOpponent: {startPos: Point.create(Players.FINISH_ROW_BLACK, 0)},
     });
 
     const f = () => game.moveCurrentPlayerToDirection(Direction.Down);
@@ -48,13 +46,11 @@ describe('Game', () => {
 
   it('should make two steps when can`t do one step', () => {
     game = new Game({
-      players: {
-        black: {startPos: Point.create(8, 8)},
-        white: {startPos: Point.create(10, 8)},
-      },
+      currOpponent: {startPos: Point.create(8, 8)},
+      currPlayer: {startPos: Point.create(10, 8)},
     });
 
-    const playersBeforeTwoSteps = game.players;
+    const playersBeforeTwoSteps = [game.currentOpponent, game.currentPlayer];
     expect(playersBeforeTwoSteps[0].currentPosition).toBe(Point.create(8, 8));
     expect(playersBeforeTwoSteps[1].currentPosition).toBe(Point.create(10, 8));
 
@@ -68,11 +64,17 @@ describe('Game', () => {
     const player = game.currentPlayer;
     game.moveCurrentPlayerToDirection(Direction.Up);
     game.placeWall(Wall.create(Point.create(1, 6), Direction.Right));
-    const node = game.getNode(player.currentPosition);
-    const distance = node.shortestDistanceTo(
+    const result = player.currentNode.shortestPathTo(
       n => player.finishRow === n.position.row
-    )?.currDistance;
-    console.log(distance);
-    expect(distance).toBe(8);
+    );
+    // printGameGridToConsole(game, n => {
+    //   if (n instanceof GameNode) {
+    //     if (result.path.map(node => node.position).includes(n.position)) {
+    //       return 'P';
+    //     }
+    //   }
+    //   return null;
+    // });
+    expect(result?.distance).toBe(8);
   });
 });

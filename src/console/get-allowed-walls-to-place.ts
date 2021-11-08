@@ -1,20 +1,17 @@
-import {Wall} from './../domain/core/wall';
+import {Wall} from '../domain/core/wall';
 import {GameView} from '../domain/core/game';
-import {Node} from '../domain/core/node';
-import {Point} from '../domain/core/point';
+import {Directions, Point} from '../domain/core/point';
 
-export const getAllowedWallsToPlace = (game: GameView) => {
+export const getAllowedWallsToPlace = (game: GameView): Wall | null => {
   const currentOpponent = game.currentOpponent;
   let currentNode = game.getNode(currentOpponent.currentPosition);
 
-  const opponentShortestDistanceNodes: Array<Node> =
-    currentNode.shortestDistanceTo(
-      n => currentOpponent.finishRow === n.position.row
-    )?.previousNodes as Array<Node>;
+  const opponentShortestPath = currentNode.shortestPathTo(
+    n => currentOpponent.finishRow === n.position.row
+  )?.path;
 
-  let nextNode = opponentShortestDistanceNodes[0];
-  const finalNode =
-    opponentShortestDistanceNodes[opponentShortestDistanceNodes.length - 1];
+  let nextNode = opponentShortestPath![0];
+  const finalNode = opponentShortestPath![opponentShortestPath!.length - 1];
 
   const tryPlaceWall = (): Wall | null => {
     const wallDirectionColumn =
@@ -43,13 +40,35 @@ export const getAllowedWallsToPlace = (game: GameView) => {
     if (game.canPlaceWall(newWall)) {
       return newWall;
     } else {
-      const nextNodeIndex = opponentShortestDistanceNodes.indexOf(nextNode);
-      if (nextNodeIndex < opponentShortestDistanceNodes.length - 1) {
+      const nextNodeIndex = opponentShortestPath!.indexOf(nextNode);
+      if (nextNodeIndex < opponentShortestPath!.length - 1) {
         currentNode = nextNode;
-        nextNode = opponentShortestDistanceNodes[nextNodeIndex + 1];
+        nextNode = opponentShortestPath![nextNodeIndex + 1];
         return tryPlaceWall();
       }
       return null;
     }
   };
+  return tryPlaceWall();
+};
+
+const flat = <T>(arr: T[][]): T[] => ([] as T[]).concat(...arr);
+
+export const getWallToPlace = (game: GameView): Wall[] => {
+  const opponent = game.currentOpponent;
+  const opponentNode = game.getNode(opponent.currentPosition);
+  const path = opponentNode.shortestPathTo(
+    n => opponent.finishRow === n.position.row
+  )!.path;
+  const resultWalls = path.map(node => {
+    const points = node.position.neighbors();
+    const walls = points.map(
+      startPoint =>
+        Directions.allDirections()
+          .map(direction => Wall.tryCreate(startPoint, direction))
+          .filter(w => w !== null) as Wall[]
+    );
+    return flat(walls);
+  });
+  return flat(resultWalls);
 };
