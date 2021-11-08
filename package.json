@@ -15,7 +15,8 @@
     "fix": "gts fix",
     "build": "webpack --mode production",
     "precommit": "npm run fix && npm run test && npm run build",
-    "bot": "tsc && ./test.bat"
+    "single-run": "tsc && single-run.bat",
+    "full-run": "tsc && full-run.bat"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.15.6",
