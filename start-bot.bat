@@ -1,2 +1,2 @@
 @echo off
-node build/src/console/index.js
+node bot-build/src/console/index.js
