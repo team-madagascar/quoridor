@@ -1,11 +1,12 @@
 {
-//  "extends": "./node_modules/gts/tsconfig-google.json",
+  "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
     "lib": ["dom"],
     "rootDir": ".",
     "outDir": "build",
     "target": "ES2015",
-    "module": "commonjs"
+    "module": "commonjs",
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",
