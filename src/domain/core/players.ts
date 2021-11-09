@@ -26,17 +26,23 @@ export class Players {
     currPlayer: PlayerInitialState | undefined = undefined,
     currOpponent: PlayerInitialState | undefined = undefined
   ) {
+    const orElse = <T>(value: T | undefined | null, orElse: T): T => {
+      if (value === undefined || value === null) {
+        return orElse;
+      }
+      return value;
+    };
     const player = new Player(
-      graph.getNode(currPlayer?.startPos || this.START_POS_WHITE)!,
-      currPlayer?.finishRow || Players.FINISH_ROW_WHITE,
-      currPlayer?.id || 'W',
-      currPlayer?.wallsCount || Player.DEFAULT_WALLS_COUNT
+      graph.getNode(orElse(currPlayer?.startPos, this.START_POS_WHITE))!,
+      orElse(currPlayer?.finishRow, Players.FINISH_ROW_WHITE),
+      orElse(currPlayer?.id, 'W'),
+      orElse(currPlayer?.wallsCount, Player.DEFAULT_WALLS_COUNT)
     );
     const opponent = new Player(
-      graph.getNode(currOpponent?.startPos || this.START_POS_BLACK)!,
-      currOpponent?.finishRow || Players.FINISH_ROW_BLACK,
-      currOpponent?.id || 'B',
-      currOpponent?.wallsCount || Player.DEFAULT_WALLS_COUNT
+      graph.getNode(orElse(currOpponent?.startPos, this.START_POS_BLACK))!,
+      orElse(currOpponent?.finishRow, Players.FINISH_ROW_BLACK),
+      orElse(currOpponent?.id, 'B'),
+      orElse(currOpponent?.wallsCount, Player.DEFAULT_WALLS_COUNT)
     );
     this._players = [opponent, player];
     this._currentPlayer = player;
