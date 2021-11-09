@@ -13,13 +13,13 @@ export class GameNode {
 
   canMoveToDirection(direction: Direction): boolean {
     const newPoint = this.position.move(direction, NODE_GAP);
-    if (!this._graph.hasNode(newPoint)) return false;
+    if (!newPoint.isNodePoint()) return false;
     return this.isConnectedTo(this._graph.getNode(newPoint));
   }
 
   moveToDirection(direction: Direction): GameNode | undefined {
     const newPosition = this.position.move(direction, NODE_GAP);
-    if (!this._graph.hasNode(newPosition)) return undefined;
+    if (!newPosition.isNodePoint()) return undefined;
     if (this.isConnectedTo(this._graph.getNode(newPosition))) {
       return this._graph.getNode(newPosition);
     }
