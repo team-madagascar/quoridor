@@ -1,20 +1,11 @@
 import {Point} from './point';
-import {GAME_GRID_SIZE, GameNode} from './node';
+import {GameNode} from './node';
 import {ConnectionBlocker} from './connection-blocker';
 
 export class Graph {
   private readonly _nodes = new Map<Point, GameNode>();
 
-  constructor(private readonly _blocker: ConnectionBlocker) {
-    for (let i = 0; i < GAME_GRID_SIZE; i++) {
-      for (let j = 0; j < GAME_GRID_SIZE; j++) {
-        const point = Point.create(i, j);
-        if (point.isNodePoint()) {
-          this._nodes.set(point, new GameNode(point, this));
-        }
-      }
-    }
-  }
+  constructor(private readonly _blocker: ConnectionBlocker) {}
 
   hasConnection(node1: GameNode, node2: GameNode): boolean {
     const midPoint = node1.position.midPoint(node2.position);
@@ -23,15 +14,23 @@ export class Graph {
   }
 
   getNode(point: Point): GameNode {
-    const node = this._nodes.get(point);
-    if (node === undefined) {
+    if (!point.isNodePoint()) {
       throw new Error(`Has no node with position: ${JSON.stringify(point)}`);
+    }
+    let node = this._nodes.get(point);
+    if (node === undefined) {
+      node = this.createGameNode(point);
     }
     return node;
   }
 
-  hasNode(point: Point): boolean {
-    return this._nodes.has(point);
+  /***
+   * @param point - should be NodePoint
+   */
+  private createGameNode(point: Point): GameNode {
+    const node = new GameNode(point, this);
+    this._nodes.set(point, node);
+    return node;
   }
 
   searchBFS(
