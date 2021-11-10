@@ -78,25 +78,17 @@ describe('Game', () => {
     const result = player.currentNode.shortestPathTo(
       n => player.finishRow === n.position.row
     );
-    // printGameGridToConsole(game, n => {
-    //   if (n instanceof GameNode) {
-    //     if (result.path.map(node => node.position).includes(n.position)) {
-    //       return 'P';
-    //     }
-    //   }
-    //   return null;
-    // });
     expect(result?.distance).toBe(8);
   });
   it('should test', () => {
-    const bot = new SmartBot(game);
-    game.moveCurrentPlayerToDirection(Direction.Up);
-    game.placeWall(Wall.create(Point.create(1, 6), Direction.Right));
-    printGameGridToConsole(game);
-    const n = bot.bestNodeToMove();
-    const w = bot.bestWallToPlace();
-    console.log({node: n.node.toString(), e: n.estimate});
-    console.log({wall: w.wall.toString(), e: w.estimate});
-    expect(0).toBe(0);
+    // const bot = new SmartBot(game);
+    // game.moveCurrentPlayerToDirection(Direction.Up);
+    // game.placeWall(Wall.create(Point.create(1, 6), Direction.Right));
+    // printGameGridToConsole(game);
+    // const n = bot.bestNodeToMove();
+    // const w = bot.bestWallToPlace();
+    // console.log({node: n.node.toString(), e: n.estimate});
+    // console.log({wall: w.wall.toString(), e: w.estimate});
+    // expect(0).toBe(0);
   });
 });

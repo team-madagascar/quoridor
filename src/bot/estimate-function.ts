@@ -1,6 +1,10 @@
 import {GameView} from '../domain/core/game';
 
-export const estimateFunction = (game: GameView): number => {
+export const estimateOpponentWinValue = (game: GameView): number => {
+  if (game.isGameOver()) {
+    return Number.POSITIVE_INFINITY;
+  }
+
   const currentPlayer = game.currentPlayer;
   const currentOpponent = game.currentOpponent;
 
@@ -13,5 +17,5 @@ export const estimateFunction = (game: GameView): number => {
   const opponentShortestDistance: number = opponentNode.shortestPathTo(
     n => currentOpponent.finishRow === n.position.row
   )?.distance as number;
-  return opponentShortestDistance - playerShortestDistance;
+  return playerShortestDistance - opponentShortestDistance;
 };

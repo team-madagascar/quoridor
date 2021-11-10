@@ -1,9 +1,12 @@
 import {GameView} from '../domain/core/game';
 import {Command, Commands} from '../domain/command';
 import {getWallToPlace} from './get-allowed-walls-to-place';
-import {estimateFunction} from './estimate-function';
-import {Wall} from '../domain/core/wall';
-import {GameNode} from '../domain/core/node';
+import {estimateOpponentWinValue} from './estimate-function';
+
+interface GameStep {
+  command: Command;
+  winValue: number;
+}
 
 export class SmartBot {
   constructor(private readonly game: GameView) {}
@@ -11,36 +14,36 @@ export class SmartBot {
   doStep(): Command {
     const bestNodeToMove = this.bestNodeToMove();
     const bestWallToPlace = this.bestWallToPlace();
-    if (bestWallToPlace === undefined) {
-      return Commands.moveToNode(bestNodeToMove.node);
-    }
-    if (bestNodeToMove === undefined) {
-      return Commands.placeWall(bestWallToPlace.wall);
-    }
-    if (bestNodeToMove.estimate <= bestWallToPlace.estimate) {
-      return Commands.moveToNode(bestNodeToMove.node);
-    }
-    return Commands.placeWall(bestWallToPlace.wall);
+    return SmartBot.findBestGameStep([...bestNodeToMove, ...bestWallToPlace]);
   }
 
-  bestWallToPlace(): {wall: Wall; estimate: number} {
-    const a = getWallToPlace(this.game).map(w => {
+  bestWallToPlace(): GameStep[] {
+    return getWallToPlace(this.game).map(w => {
       const gameCopy = this.game.copy();
+      // current player was changed
       gameCopy.placeWall(w);
-      return {wall: w, estimate: estimateFunction(gameCopy)};
+      return {
+        command: Commands.placeWall(w),
+        winValue: estimateOpponentWinValue(gameCopy),
+      } as GameStep;
     });
-    a.sort((a, b) => (a.estimate >= b.estimate ? 1 : -1));
-    return a[0];
   }
 
-  bestNodeToMove(): {node: GameNode; estimate: number} {
-    const t = this.game.allowedNodesToMove().map(n => {
+  bestNodeToMove(): GameStep[] {
+    return this.game.allowedNodesToMove().map(n => {
       const gameCopy = this.game.copy();
       gameCopy.moveCurrentPlayerToNode(gameCopy.getNode(n.position));
-      const estimate = estimateFunction(gameCopy);
-      return {node: n, estimate};
+      // current player was changed
+      const value = estimateOpponentWinValue(gameCopy);
+      return {
+        command: Commands.moveToNode(n),
+        winValue: value,
+      } as GameStep;
     });
-    t.sort((a, b) => a.estimate - b.estimate);
-    return t[0];
+  }
+
+  private static findBestGameStep(steps: GameStep[]): Command {
+    steps.sort((a: GameStep, b: GameStep) => a.winValue - b.winValue);
+    return steps[steps.length - 1].command;
   }
 }
