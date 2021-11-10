@@ -1,4 +1,3 @@
-import {PlayersId} from './enums/players-id';
 import {setWallsNumbers} from './helpers/set-walls-numbers';
 import {emitter, eventTypes} from './emitter';
 import {GameView} from '../domain/core/game';
@@ -11,7 +10,7 @@ import {GameListener} from '../domain/client';
 import {showWinner, showWinnerForTwoPlayers} from './results-modal';
 
 export abstract class WebListener implements GameListener {
-  constructor(public id: PlayersId) {}
+  constructor(public id: string) {}
 
   onSessionOver() {}
 
@@ -23,7 +22,7 @@ export abstract class WebListener implements GameListener {
       game.currentOpponent.currentPosition.row,
       game.placedWalls,
       game.allowedNodesToMove(),
-      this.id
+      Number(this.id)
     );
     return Promise.resolve();
   }
@@ -38,7 +37,7 @@ export abstract class WebListener implements GameListener {
       game.players[1].currentPosition.row,
       game.placedWalls,
       game.allowedNodesToMove(),
-      this.id
+      Number(this.id)
     );
     setWallsNumbers({
       playerWallsCount: game.currentPlayer.remainingWallsCount,

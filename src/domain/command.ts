@@ -1,10 +1,12 @@
 import {Game} from './core/game';
 import {Direction} from './core/point';
 import {Wall} from './core/wall';
-import {Node} from './core/node';
+import {GameNode} from './core/node';
 
 export interface Command {
   invoke(game: Game): void;
+
+  toString(): string;
 }
 
 export class MoveToDirectionCommand implements Command {
@@ -13,13 +15,21 @@ export class MoveToDirectionCommand implements Command {
   invoke(game: Game): void {
     game.moveCurrentPlayerToDirection(this.direction);
   }
+
+  toString(): string {
+    return `move ${Direction[this.direction]}`;
+  }
 }
 
 export class MoveToNodeCommand implements Command {
-  constructor(readonly node: Node) {}
+  constructor(readonly node: GameNode) {}
 
   invoke(game: Game): void {
     game.moveCurrentPlayerToNode(this.node);
+  }
+
+  toString(): string {
+    return `move ${this.node.position.toString()}`;
   }
 }
 
@@ -29,6 +39,10 @@ export class PlaceWallCommand implements Command {
   invoke(game: Game): void {
     game.placeWall(this.wall);
   }
+
+  toString(): string {
+    return `wall: ${this.wall.toString()}`;
+  }
 }
 
 export class Commands {
@@ -36,7 +50,7 @@ export class Commands {
     return new MoveToDirectionCommand(direction);
   }
 
-  static moveToNode(node: Node): Command {
+  static moveToNode(node: GameNode): Command {
     return new MoveToNodeCommand(node);
   }
 

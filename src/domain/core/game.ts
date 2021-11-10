@@ -2,12 +2,9 @@ import {Direction, Directions, Point} from './point';
 import {Player, PlayerView} from './player';
 import {Wall} from './wall';
 import {ConnectionBlocker} from './connection-blocker';
-import {Node} from './node';
-import {Players} from './players';
+import {GameNode} from './node';
+import {PlayerInitialState, Players} from './players';
 import {Graph} from './graph';
-
-export const GAME_GRID_SIZE = 17;
-export const NODE_GAP = 2;
 
 export interface GameView {
   get currentPlayer(): PlayerView;
@@ -16,11 +13,13 @@ export interface GameView {
 
   isBlocked(point: Point): boolean;
 
-  hasPlayer(nodeView: Node): boolean;
+  hasPlayer(nodeView: GameNode): boolean;
 
-  allowedNodesToMove(): ReadonlyArray<Node>;
+  allowedNodesToMove(): ReadonlyArray<GameNode>;
 
-  getNode(point: Point): Node;
+  allowedNodesInDirection(node: GameNode, direction: Direction): GameNode[];
+
+  getNode(point: Point): GameNode;
 
   isGameOver(): boolean;
 
@@ -33,6 +32,14 @@ export interface GameView {
   canPlaceWall(wall: Wall): boolean;
 
   get players(): ReadonlyArray<PlayerView>;
+
+  copy(): Game;
+}
+
+export interface GameConstructor {
+  walls?: ReadonlyArray<Wall> | undefined;
+  currPlayer?: PlayerInitialState | undefined;
+  currOpponent?: PlayerInitialState | undefined;
 }
 
 export class Game implements GameView {
@@ -40,9 +47,13 @@ export class Game implements GameView {
   private readonly _graph: Graph;
   private readonly _players: Players;
 
-  constructor(playerId1: string, playerId2: string) {
+  constructor(constructor: GameConstructor = {} as GameConstructor) {
     this._graph = new Graph(this._blocker);
-    this._players = new Players(playerId1, playerId2, this._graph);
+    const {currOpponent, currPlayer, walls} = constructor;
+    if (walls !== undefined) {
+      walls.forEach(w => this._blocker.placeWall(w));
+    }
+    this._players = new Players(this._graph, currPlayer, currOpponent);
   }
 
   canPlaceWall(wall: Wall): boolean {
@@ -65,7 +76,7 @@ export class Game implements GameView {
     return this._blocker.placedWalls;
   }
 
-  getNode(point: Point): Node {
+  getNode(point: Point): GameNode {
     return this._graph.getNode(point);
   }
 
@@ -75,15 +86,18 @@ export class Game implements GameView {
     this._players.changeCurrentPlayer();
   }
 
-  moveCurrentPlayerToNode(node: Node) {
+  moveCurrentPlayerToNode(node: GameNode) {
     this.requireGameIsNotOver();
-    if (this.allowedNodesToMove().includes(node)) {
-      this._players.currentPlayer.moveTo(node);
+    if (!this.allowedNodesToMove().includes(node)) {
+      throw new Error(
+        `Game: can't move player to node ${node.position.toString()}`
+      );
     }
+    this._players.currentPlayer.moveTo(node);
     this._players.changeCurrentPlayer();
   }
 
-  hasPlayer(node: Node): boolean {
+  hasPlayer(node: GameNode): boolean {
     return this._players.nodeHasPlayer(this.getNode(node.position));
   }
 
@@ -100,12 +114,12 @@ export class Game implements GameView {
     return this._players.somePlayerWin();
   }
 
-  allowedNodesToMove(): ReadonlyArray<Node> {
+  allowedNodesToMove(): ReadonlyArray<GameNode> {
     const currentNode = this._players.currentPlayer.currentNode;
     const t = Directions.allDirections().map(d =>
       this.allowedNodesInDirection(currentNode, d)
     );
-    const result: Node[] = [];
+    const result: GameNode[] = [];
     t.forEach(nodes => result.push(...nodes));
     return result;
   }
@@ -118,14 +132,14 @@ export class Game implements GameView {
     if (this.isGameOver()) {
       return this._players.currentOpponent;
     }
-    throw new Error('Has no winner yet. Game is not over');
+    throw new Error('Game: Has no winner yet. Game is not over');
   }
 
   get loser(): PlayerView {
     if (this.isGameOver()) {
       return this.currentPlayer;
     }
-    throw new Error('Has no loser yet. Game is not over');
+    throw new Error('Game: Has no loser yet. Game is not over');
   }
 
   get currentOpponent(): PlayerView {
@@ -136,7 +150,7 @@ export class Game implements GameView {
     return this._players.currentPlayer;
   }
 
-  getPlayer(node: Node): PlayerView {
+  getPlayer(node: GameNode): PlayerView {
     return this._players.getPlayer(node);
   }
 
@@ -144,17 +158,39 @@ export class Game implements GameView {
     return this._blocker.isBlocked(point);
   }
 
+  copy(): Game {
+    const walls = this._blocker.placedWalls;
+    const player = this.currentPlayer;
+    const opponent = this.currentOpponent;
+    const constructor: GameConstructor = {
+      walls,
+      currPlayer: {
+        id: player.id,
+        wallsCount: player.remainingWallsCount,
+        startPos: player.currentPosition,
+        finishRow: player.finishRow,
+      },
+      currOpponent: {
+        id: opponent.id,
+        wallsCount: opponent.remainingWallsCount,
+        startPos: opponent.currentPosition,
+        finishRow: opponent.finishRow,
+      },
+    };
+    return new Game(constructor);
+  }
+
   private movePlayerToDirection(player: Player, direction: Direction) {
     const newNode = this.allowedNodesInDirection(player.currentNode, direction);
     if (newNode.length === 0) {
       throw new Error(
-        `Player "${player.id}" can't make step in direction: ${Direction[direction]}`
+        `Game: Player "${player.id}" can't make step in direction: ${Direction[direction]}`
       );
     }
     player.moveTo(newNode[0]);
   }
 
-  allowedNodesInDirection(node: Node, direction: Direction): Node[] {
+  allowedNodesInDirection(node: GameNode, direction: Direction): GameNode[] {
     const newNode = node.moveToDirection(direction);
     if (newNode === undefined) return [];
     if (this._players.nodeHasPlayer(newNode)) {
@@ -163,24 +199,32 @@ export class Game implements GameView {
     return [newNode];
   }
 
-  private jumpToDirection(prev: Node, direction: Direction, start: Node) {
+  private jumpToDirection(
+    prev: GameNode,
+    direction: Direction,
+    start: GameNode
+  ) {
     const next = prev.moveToDirection(direction);
     if (next !== undefined) return [next];
     return Directions.allDirections()
       .map(d => prev.moveToDirection(d))
-      .filter(n => n !== undefined && n.position !== start.position) as Node[];
+      .filter(
+        n => n !== undefined && n.position !== start.position
+      ) as GameNode[];
   }
 
   private requirePlayersCanReachFinishes(wall: Wall) {
     if (!this._players.canPlayersReachFinishPoints()) {
       this._blocker.removeWall(wall);
-      throw new Error('Players should be able to reach their finish lines');
+      throw new Error(
+        'Game: Players should be able to reach their finish lines'
+      );
     }
   }
 
   private requireGameIsNotOver() {
     if (this.isGameOver()) {
-      throw new Error('Game is already over');
+      throw new Error('Game: Game is already over');
     }
   }
 }

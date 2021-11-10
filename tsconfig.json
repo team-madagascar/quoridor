@@ -3,9 +3,10 @@
   "compilerOptions": {
     "lib": ["dom"],
     "rootDir": ".",
-    "outDir": "build",
+    "outDir": "bot-build",
     "target": "ES2015",
-    "module": "commonjs"
+    "module": "commonjs",
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",

@@ -1,4 +1,3 @@
-import {PlayersId} from './enums/players-id';
 import {PlayerGameResult} from '../domain/game-facade';
 import {showModal, createModalBody, hideModal} from './modal';
 import {
@@ -6,6 +5,7 @@ import {
   ResultModalWindowTitlesForTwoPlayers,
 } from './enums/modal-window-titles';
 import {ResultImagesPath} from './enums/result-images-path';
+import {PlayersId} from './enums/players-id';
 
 const getResultHTML = (imagePath: string) => `
 <div class="result-image-wrapper">
@@ -28,9 +28,10 @@ export const showWinner = async (result: PlayerGameResult) => {
   });
 };
 
-export const showWinnerForTwoPlayers = async (playerId: PlayersId) => {
+export const showWinnerForTwoPlayers = async (playerId: string) => {
   showModal({
-    title: ResultModalWindowTitlesForTwoPlayers[playerId],
+    title:
+      ResultModalWindowTitlesForTwoPlayers[playerId as unknown as PlayersId],
     bodyElement: createModalBody(
       getResultHTML(ResultImagesPath[PlayerGameResult.Victory])
     ),

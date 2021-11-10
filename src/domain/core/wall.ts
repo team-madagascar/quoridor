@@ -8,10 +8,22 @@ export class Wall {
     this.requireBorderPointsToConnectPlayerNodes();
   }
 
-  static create(point1: Point, direction: Direction) {
+  static tryCreate(point1: Point, direction: Direction): Wall | null {
+    try {
+      return Wall.create(point1, direction);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static create(point1: Point, direction: Direction): Wall {
     const point2 = point1.move(direction, 1);
     const point3 = point1.move(direction, 2);
     return new Wall([point1, point2, point3]);
+  }
+
+  toString(): string {
+    return `${this.points[0].toString()}|${this.points[1].toString()}|${this.points[2].toString()}`;
   }
 
   private requirePointsToBeWithinGameGrid() {
@@ -24,20 +36,20 @@ export class Wall {
       !this.points[2].isConnectedWithPlayerPoint()
     ) {
       throw new Error(
-        'First or second point in wall should be connected with at least one PlayerPoint'
+        'WalL: First or second point in wall should be connected with at least one PlayerPoint'
       );
     }
   }
 
   private requirePointsNotToBePlayerPoints() {
     if (this.points.some(p => p.isNodePoint())) {
-      throw new Error('Points in wall can`t be player points');
+      throw new Error('Wall: Points in wall can`t be player points');
     }
   }
 
   private requirePointsToBeLineUp() {
     if (!this.isAllPointsMakeOneLine()) {
-      throw new Error('All wall points should be on one line');
+      throw new Error('Wall: All wall points should be on one line');
     }
   }
 

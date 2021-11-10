@@ -1,4 +1,4 @@
-import {GAME_GRID_SIZE} from './game';
+import {GAME_GRID_SIZE} from './node';
 
 export enum Direction {
   Up,
@@ -80,8 +80,14 @@ export class Point {
 
   requireToBeWithinGameGrid(fieldSize = GAME_GRID_SIZE) {
     if (!this.isWithinGameGrid(fieldSize)) {
-      throw new Error(`Point is out of game grid: ${JSON.stringify(this)}`);
+      throw new Error(
+        `Point: Point is out of game grid: ${JSON.stringify(this)}`
+      );
     }
+  }
+
+  toString(): string {
+    return `${this.row}:${this.column}`;
   }
 
   private plus(deltaRow: number, deltaColumn: number): Point {

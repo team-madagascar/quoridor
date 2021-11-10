@@ -1,5 +1,5 @@
 import {Point} from './point';
-import {Node} from './node';
+import {GameNode} from './node';
 
 export interface PlayerView {
   get id(): string;
@@ -10,21 +10,23 @@ export interface PlayerView {
 
   get currentPosition(): Point;
 
+  get currentNode(): GameNode;
+
   hasWallsToPlace(): boolean;
 
   isFinishReached(): boolean;
 
-  isFinishNode(node: Node): boolean;
+  isFinishNode(node: GameNode): boolean;
 }
 
 export class Player implements PlayerView {
   static readonly DEFAULT_WALLS_COUNT = 10;
 
   private _remainingWallsCount: number;
-  private _currentNode: Node;
+  private _currentNode: GameNode;
 
   constructor(
-    startNode: Node,
+    startNode: GameNode,
     private readonly _finishRow: number,
     private readonly _id: string,
     wallsCount: number = Player.DEFAULT_WALLS_COUNT
@@ -33,7 +35,7 @@ export class Player implements PlayerView {
     this._remainingWallsCount = wallsCount;
   }
 
-  get currentNode(): Node {
+  get currentNode(): GameNode {
     return this._currentNode;
   }
 
@@ -57,12 +59,12 @@ export class Player implements PlayerView {
     return this.currentNode.position.row === this._finishRow;
   }
 
-  isFinishNode(node: Node): boolean {
+  isFinishNode(node: GameNode): boolean {
     return this._finishRow === node.position.row;
   }
 
   canReachFinishPoint(): boolean {
-    return this.currentNode.search(n => this.isFinishNode(n));
+    return this.currentNode.walk(n => this.isFinishNode(n));
   }
 
   takeWall() {
@@ -80,7 +82,16 @@ export class Player implements PlayerView {
     }
   }
 
-  moveTo(node: Node) {
+  moveTo(node: GameNode) {
     this._currentNode = node;
+  }
+
+  copy(node: GameNode): Player {
+    return new Player(
+      node,
+      this._finishRow,
+      this._id,
+      this.remainingWallsCount
+    );
   }
 }
