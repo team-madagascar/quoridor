@@ -7,7 +7,7 @@ export const NODE_GAP = 2;
 export class GameNode {
   constructor(readonly position: Point, private readonly _graph: Graph) {
     if (!position.isNodePoint()) {
-      throw new Error('Node should have even position');
+      throw new Error('GameNode: Node should have even position');
     }
   }
 
@@ -93,5 +93,9 @@ export class GameNode {
 
   private neighbors(): ReadonlyArray<GameNode> {
     return this.position.neighbors(NODE_GAP).map(n => this._graph.getNode(n));
+  }
+
+  toString(): string {
+    return `Node(${this.position.toString()})`;
   }
 }

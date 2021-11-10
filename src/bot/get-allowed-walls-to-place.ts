@@ -66,7 +66,7 @@ export const getWallToPlace = (game: GameView): Wall[] => {
       startPoint =>
         Directions.allDirections()
           .map(direction => Wall.tryCreate(startPoint, direction))
-          .filter(w => w !== null) as Wall[]
+          .filter(w => w !== null && game.canPlaceWall(w)) as Wall[]
     );
     return flat(walls);
   });

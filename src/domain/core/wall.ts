@@ -36,20 +36,20 @@ export class Wall {
       !this.points[2].isConnectedWithPlayerPoint()
     ) {
       throw new Error(
-        'First or second point in wall should be connected with at least one PlayerPoint'
+        'WalL: First or second point in wall should be connected with at least one PlayerPoint'
       );
     }
   }
 
   private requirePointsNotToBePlayerPoints() {
     if (this.points.some(p => p.isNodePoint())) {
-      throw new Error('Points in wall can`t be player points');
+      throw new Error('Wall: Points in wall can`t be player points');
     }
   }
 
   private requirePointsToBeLineUp() {
     if (!this.isAllPointsMakeOneLine()) {
-      throw new Error('All wall points should be on one line');
+      throw new Error('Wall: All wall points should be on one line');
     }
   }
 

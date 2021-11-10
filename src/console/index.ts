@@ -17,7 +17,7 @@ const doStep = () => {
   if (bot === undefined) {
     bot = new SmartBot(game);
   }
-  const command = bot.doStep(game);
+  const command = bot.doStep();
   const korotenkoCommand = adapter.toKorotenkoCommand(command);
   command.invoke(game);
   LOGGER.info('BOT COMMAND: ' + command.toString());
@@ -52,7 +52,7 @@ korotenko.setListener(input => {
     }
   } catch (e) {
     LOGGER.info('Error: ');
-    LOGGER.info(JSON.stringify(e));
+    LOGGER.info(e);
   } finally {
     if (game.isGameOver()) {
       LOGGER.info('Game is over');

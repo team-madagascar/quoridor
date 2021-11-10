@@ -80,7 +80,9 @@ export class Point {
 
   requireToBeWithinGameGrid(fieldSize = GAME_GRID_SIZE) {
     if (!this.isWithinGameGrid(fieldSize)) {
-      throw new Error(`Point is out of game grid: ${JSON.stringify(this)}`);
+      throw new Error(
+        `Point: Point is out of game grid: ${JSON.stringify(this)}`
+      );
     }
   }
 

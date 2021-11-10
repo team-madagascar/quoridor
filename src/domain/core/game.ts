@@ -56,10 +56,6 @@ export class Game implements GameView {
     this._players = new Players(this._graph, currPlayer, currOpponent);
   }
 
-  removeWall(wall: Wall) {
-    this._blocker.removeWall(wall);
-  }
-
   canPlaceWall(wall: Wall): boolean {
     if (this._blocker.intersectPlacedWalls(wall)) {
       return false;
@@ -92,9 +88,12 @@ export class Game implements GameView {
 
   moveCurrentPlayerToNode(node: GameNode) {
     this.requireGameIsNotOver();
-    if (this.allowedNodesToMove().includes(node)) {
-      this._players.currentPlayer.moveTo(node);
+    if (!this.allowedNodesToMove().includes(node)) {
+      throw new Error(
+        `Game: can't move player to node ${node.position.toString()}`
+      );
     }
+    this._players.currentPlayer.moveTo(node);
     this._players.changeCurrentPlayer();
   }
 
@@ -133,14 +132,14 @@ export class Game implements GameView {
     if (this.isGameOver()) {
       return this._players.currentOpponent;
     }
-    throw new Error('Has no winner yet. Game is not over');
+    throw new Error('Game: Has no winner yet. Game is not over');
   }
 
   get loser(): PlayerView {
     if (this.isGameOver()) {
       return this.currentPlayer;
     }
-    throw new Error('Has no loser yet. Game is not over');
+    throw new Error('Game: Has no loser yet. Game is not over');
   }
 
   get currentOpponent(): PlayerView {
@@ -159,8 +158,8 @@ export class Game implements GameView {
     return this._blocker.isBlocked(point);
   }
 
-  copy(newWalls: ReadonlyArray<Wall> | undefined = undefined): Game {
-    const walls = newWalls || this._blocker.placedWalls;
+  copy(): Game {
+    const walls = this._blocker.placedWalls;
     const player = this.currentPlayer;
     const opponent = this.currentOpponent;
     const constructor: GameConstructor = {
@@ -185,7 +184,7 @@ export class Game implements GameView {
     const newNode = this.allowedNodesInDirection(player.currentNode, direction);
     if (newNode.length === 0) {
       throw new Error(
-        `Player "${player.id}" can't make step in direction: ${Direction[direction]}`
+        `Game: Player "${player.id}" can't make step in direction: ${Direction[direction]}`
       );
     }
     player.moveTo(newNode[0]);
@@ -217,13 +216,15 @@ export class Game implements GameView {
   private requirePlayersCanReachFinishes(wall: Wall) {
     if (!this._players.canPlayersReachFinishPoints()) {
       this._blocker.removeWall(wall);
-      throw new Error('Players should be able to reach their finish lines');
+      throw new Error(
+        'Game: Players should be able to reach their finish lines'
+      );
     }
   }
 
   private requireGameIsNotOver() {
     if (this.isGameOver()) {
-      throw new Error('Game is already over');
+      throw new Error('Game: Game is already over');
     }
   }
 }

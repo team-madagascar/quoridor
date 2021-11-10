@@ -1,35 +1,46 @@
-import {Game, GameView} from '../domain/core/game';
+import {GameView} from '../domain/core/game';
 import {Command, Commands} from '../domain/command';
 import {getWallToPlace} from './get-allowed-walls-to-place';
 import {estimateFunction} from './estimate-function';
-import {Direction} from '../domain/core/point';
+import {Wall} from '../domain/core/wall';
+import {GameNode} from '../domain/core/node';
 
 export class SmartBot {
-  constructor(private readonly game: Game) {}
+  constructor(private readonly game: GameView) {}
 
-  doStep(gameView: GameView): Command {
-    return Commands.moveToNode(this.bestNodeToMove(gameView));
+  doStep(): Command {
+    const bestNodeToMove = this.bestNodeToMove();
+    const bestWallToPlace = this.bestWallToPlace();
+    if (bestWallToPlace === undefined) {
+      return Commands.moveToNode(bestNodeToMove.node);
+    }
+    if (bestNodeToMove === undefined) {
+      return Commands.placeWall(bestWallToPlace.wall);
+    }
+    if (bestNodeToMove.estimate <= bestWallToPlace.estimate) {
+      return Commands.moveToNode(bestNodeToMove.node);
+    }
+    return Commands.placeWall(bestWallToPlace.wall);
   }
 
-  private bestWallToPlace(): Command {
+  bestWallToPlace(): {wall: Wall; estimate: number} {
     const a = getWallToPlace(this.game).map(w => {
-      this.game.placeWall(w);
-      const r = {wall: w, estimate: estimateFunction(this.game)};
-      this.game.removeWall(w);
-      return r;
+      const gameCopy = this.game.copy();
+      gameCopy.placeWall(w);
+      return {wall: w, estimate: estimateFunction(gameCopy)};
     });
-
-    return Commands.moveToDirection(Direction.Up);
+    a.sort((a, b) => (a.estimate >= b.estimate ? 1 : -1));
+    return a[0];
   }
 
-  private bestNodeToMove(gameView: GameView) {
-    const t = gameView.allowedNodesToMove().map(n => ({
-      node: n,
-      distance: n.shortestPathTo(
-        n => n.position.row === gameView.currentPlayer.finishRow
-      )!.distance,
-    }));
-    t.sort((a, b) => (a.distance >= b.distance ? 1 : -1));
-    return t[0].node;
+  bestNodeToMove(): {node: GameNode; estimate: number} {
+    const t = this.game.allowedNodesToMove().map(n => {
+      const gameCopy = this.game.copy();
+      gameCopy.moveCurrentPlayerToNode(gameCopy.getNode(n.position));
+      const estimate = estimateFunction(gameCopy);
+      return {node: n, estimate};
+    });
+    t.sort((a, b) => a.estimate - b.estimate);
+    return t[0];
   }
 }

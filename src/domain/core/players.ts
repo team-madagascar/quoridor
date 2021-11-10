@@ -85,7 +85,7 @@ export class Players {
   getPlayer(node: GameNode): Player {
     const player = this._players.find(p => p.currentNode === node);
     if (player === undefined) {
-      throw new Error(`Node: ${JSON.stringify(node)} has no player`);
+      throw new Error(`${node.toString()} has no player`);
     }
     return player;
   }
