@@ -1,5 +1,4 @@
 import {GameListener} from '../domain/client';
-import {RandomBot} from '../bot/random-bot';
 import {GameView} from '../domain/core/game';
 import {Command} from '../domain/command';
 import {SmartBot} from '../bot/smart-bot';

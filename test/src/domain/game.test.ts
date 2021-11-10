@@ -1,20 +1,8 @@
-import {Game, GameView} from '../../../src/domain/core/game';
+import {Game} from '../../../src/domain/core/game';
 import {Direction, Point} from '../../../src/domain/core/point';
 import {Wall} from '../../../src/domain/core/wall';
 import {printGameGridToConsole} from '../utils/utils';
 import {Players} from '../../../src/domain/core/players';
-import {SmartBot} from '../../../src/bot/smart-bot';
-
-function test2(gameView: GameView) {
-  const t = gameView.allowedNodesToMove().map(n => ({
-    node: n,
-    distance: n.shortestPathTo(
-      n => n.position.row === gameView.currentPlayer.finishRow
-    ),
-  }));
-  t.sort((a, b) => (a.distance! >= b.distance! ? 1 : -1));
-  return t[0];
-}
 
 describe('Game', () => {
   let game: Game;
@@ -79,16 +67,5 @@ describe('Game', () => {
       n => player.finishRow === n.position.row
     );
     expect(result?.distance).toBe(8);
-  });
-  it('should test', () => {
-    // const bot = new SmartBot(game);
-    // game.moveCurrentPlayerToDirection(Direction.Up);
-    // game.placeWall(Wall.create(Point.create(1, 6), Direction.Right));
-    // printGameGridToConsole(game);
-    // const n = bot.bestNodeToMove();
-    // const w = bot.bestWallToPlace();
-    // console.log({node: n.node.toString(), e: n.estimate});
-    // console.log({wall: w.wall.toString(), e: w.estimate});
-    // expect(0).toBe(0);
   });
 });

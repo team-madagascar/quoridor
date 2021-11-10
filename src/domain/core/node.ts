@@ -83,10 +83,6 @@ export class GameNode {
     return this.position.neighbors(NODE_GAP).map(p => this._graph.getNode(p));
   }
 
-  connectedNeighbors(): ReadonlyArray<GameNode> {
-    return this.allNeighbors().filter(n => this.isConnectedTo(n));
-  }
-
   get connectedNodes(): ReadonlyArray<GameNode> {
     return this.neighbors().filter(n => this.isConnectedTo(n));
   }

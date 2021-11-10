@@ -1,4 +1,4 @@
-import {Command, Commands} from './../domain/command';
+import {Command, Commands} from '../domain/command';
 import {GameNode} from '../domain/core/node';
 import {Point} from '../domain/core/point';
 import {Wall} from '../domain/core/wall';

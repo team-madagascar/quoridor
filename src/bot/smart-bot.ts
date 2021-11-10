@@ -1,7 +1,48 @@
 import {GameView} from '../domain/core/game';
 import {Command, Commands} from '../domain/command';
-import {getWallToPlace} from './get-allowed-walls-to-place';
-import {estimateOpponentWinValue} from './estimate-function';
+import {Wall} from '../domain/core/wall';
+import {Directions} from '../domain/core/point';
+
+const flat = <T>(arr: T[][]): T[] => ([] as T[]).concat(...arr);
+
+const getWallToPlace = (game: GameView): Wall[] => {
+  const opponent = game.currentOpponent;
+  const opponentNode = game.getNode(opponent.currentPosition);
+  const path = opponentNode.shortestPathTo(
+    n => opponent.finishRow === n.position.row
+  )!.path;
+  const resultWalls = path.map(node => {
+    const points = node.position.neighbors();
+    const walls = points.map(
+      startPoint =>
+        Directions.allDirections()
+          .map(direction => Wall.tryCreate(startPoint, direction))
+          .filter(w => w !== null && game.canPlaceWall(w)) as Wall[]
+    );
+    return flat(walls);
+  });
+  return flat(resultWalls);
+};
+
+const estimateOpponentWinValue = (game: GameView): number => {
+  if (game.isGameOver()) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  const currentPlayer = game.currentPlayer;
+  const currentOpponent = game.currentOpponent;
+
+  const playerNode = currentPlayer.currentNode;
+  const opponentNode = currentOpponent.currentNode;
+
+  const playerShortestDistance: number = playerNode.shortestPathTo(
+    n => currentPlayer.finishRow === n.position.row
+  )?.distance as number;
+  const opponentShortestDistance: number = opponentNode.shortestPathTo(
+    n => currentOpponent.finishRow === n.position.row
+  )?.distance as number;
+  return playerShortestDistance - opponentShortestDistance;
+};
 
 interface GameStep {
   command: Command;
