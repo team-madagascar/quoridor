@@ -20,8 +20,7 @@ export class SmartBot {
   bestWallToPlace(): GameStep[] {
     return getWallToPlace(this.game).map(w => {
       const gameCopy = this.game.copy();
-      // current player was changed
-      gameCopy.placeWall(w);
+      gameCopy.placeWall(w); // current player was changed
       return {
         command: Commands.placeWall(w),
         winValue: estimateOpponentWinValue(gameCopy),
@@ -33,8 +32,7 @@ export class SmartBot {
     return this.game.allowedNodesToMove().map(n => {
       const gameCopy = this.game.copy();
       gameCopy.moveCurrentPlayerToNode(gameCopy.getNode(n.position));
-      // current player was changed
-      const value = estimateOpponentWinValue(gameCopy);
+      const value = estimateOpponentWinValue(gameCopy); // current player was changed
       return {
         command: Commands.moveToNode(n),
         winValue: value,

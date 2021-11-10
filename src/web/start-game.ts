@@ -16,12 +16,12 @@ export async function startGame() {
   let listener2;
   switch (opponent) {
     case PlayerTypes.COMPUTER:
-      listener1 = new SinglePlayerWebListener(PlayersId.Player1.toString());
-      listener2 = new BotListener(PlayersId.Player2.toString());
+      listener1 = new SinglePlayerWebListener(PlayersId.Player2.toString());
+      listener2 = new BotListener(PlayersId.Player1.toString());
       break;
     case PlayerTypes.OTHER_PLAYER:
-      listener1 = new TwoPlayersWebListener(PlayersId.Player1.toString());
-      listener2 = new TwoPlayersWebListener(PlayersId.Player2.toString());
+      listener1 = new TwoPlayersWebListener(PlayersId.Player2.toString());
+      listener2 = new TwoPlayersWebListener(PlayersId.Player1.toString());
       break;
   }
   await GameFacade.start(
