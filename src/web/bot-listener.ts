@@ -2,19 +2,17 @@ import {GameListener} from '../domain/client';
 import {RandomBot} from '../bot/random-bot';
 import {GameView} from '../domain/core/game';
 import {Command} from '../domain/command';
+import {SmartBot} from '../bot/smart-bot';
 
 export class BotListener implements GameListener {
-  private bot: RandomBot | null = null;
+  private bot: SmartBot | null = null;
 
   constructor(public id: string) {}
 
   onSessionOver() {}
 
   onGameStart(game: GameView): Promise<void> {
-    this.bot = new RandomBot(
-      game.currentPlayer.currentPosition,
-      game.currentPlayer.remainingWallsCount
-    );
+    this.bot = new SmartBot(game);
     return Promise.resolve();
   }
 
@@ -22,12 +20,7 @@ export class BotListener implements GameListener {
     this.bot = null;
   }
 
-  onNextStep(game: GameView): Promise<Command> {
-    return Promise.resolve(
-      this.bot?.randomMove(
-        game.allowedNodesToMove(),
-        game.canPlaceWall.bind(game)
-      ) as Command
-    );
+  async onNextStep(game: GameView): Promise<Command> {
+    return this.bot!.doStep();
   }
 }
