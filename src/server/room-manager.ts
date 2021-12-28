@@ -1,6 +1,5 @@
 import {WebSocket} from 'ws';
-import {StepMessage} from './index';
-import {GameRoom} from './game-room';
+import {GameRoom, StepMessage} from './game-room';
 
 export class RoomManager {
   private readonly queue: WebSocket[] = [];
