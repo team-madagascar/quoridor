@@ -35,4 +35,16 @@ export class RoomManager {
     console.log('Delete room');
     room.players.forEach(p => this.rooms.delete(p));
   }
+
+  updateRoomState(client: WebSocket, msg: StepMessage) {
+    const room = this.rooms.get(client);
+    if (room === null) {
+      console.log('Error: Client has no room');
+      return;
+    }
+    room.updateGameState(client, msg);
+    if (room.isGameOver) {
+      this.deleteRoom(room);
+    }
+  }
 }

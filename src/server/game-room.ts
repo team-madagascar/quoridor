@@ -26,12 +26,26 @@ export class GameRoom {
       return;
     }
     const command = this.adapter.fromKorotenkoCommand(step.command);
-    command.invoke(this.game);
     send(this.getCurrentOpponent(), {
       type: 'step',
       body: {command: this.adapter.toKorotenkoCommand(command)},
     });
     this.changeCurrentPlayer();
+  }
+
+  updateGameState(player: WebSocket, step: StepMessage) {
+    if (player !== this.currentPlayer) {
+      send(player, {type: 'error', body: 'Not your step'});
+      return;
+    }
+    const command = this.adapter.fromKorotenkoCommand(step.command);
+    command.invoke(this.game);
+    if (this.isGameOver) {
+      send(this.getCurrentOpponent(), {
+        type: 'step',
+        body: {command: this.adapter.toKorotenkoCommand(command)},
+      });
+    }
   }
 
   get isGameOver(): boolean {
