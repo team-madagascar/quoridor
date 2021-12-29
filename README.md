@@ -1,9 +1,11 @@
 # quoridor
 
-Game(lab2) - https://team-madagascar.github.io/quoridor/dist/index.html
+Lab 4 (Add online to quoridor)
 
-Bot:  
-Run `npm install` to download dependencies(typescript)  
-Command to run bot `start-bot.bat` (don't forget compile typescript `npm run compile`)   
-Or you can just run `npm run full-run` it will compile and run AI tester
-If needed update Quoridor.AiTester.exe
+* npm install   
+* npm run compile - compile server
+* npm run build-dev - compile web client (dev because it's faster)
+
+
+* build/src/server/index.js - server  
+* dist/index.html - web client  
