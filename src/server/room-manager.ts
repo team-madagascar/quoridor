@@ -26,5 +26,13 @@ export class RoomManager {
       return;
     }
     room.handleStep(client, step);
+    if (room.isGameOver) {
+      this.deleteRoom(room);
+    }
+  }
+
+  private deleteRoom(room) {
+    console.log('Delete room');
+    room.players.forEach(p => this.rooms.delete(p));
   }
 }

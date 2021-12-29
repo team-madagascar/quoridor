@@ -8,7 +8,7 @@ export interface StepMessage {
 }
 
 export class GameRoom {
-  private readonly players: WebSocket[];
+  public readonly players: WebSocket[];
   private currentPlayer: WebSocket;
   private game = new Game();
   private adapter = new KorotenkoAdapter(this.game);
@@ -32,6 +32,10 @@ export class GameRoom {
       body: {command: this.adapter.toKorotenkoCommand(command)},
     });
     this.changeCurrentPlayer();
+  }
+
+  get isGameOver(): boolean {
+    return this.game.isGameOver();
   }
 
   private changeCurrentPlayer() {
