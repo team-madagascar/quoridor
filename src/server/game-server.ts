@@ -1,6 +1,6 @@
 import {Server, WebSocket, WebSocketServer} from 'ws';
 
-export type MessageType = 'connect' | 'step' | 'error';
+export type MessageType = 'connect' | 'step' | 'error' | 'opponent-step';
 export type MessageHandler<T> = (body: T, client: WebSocket) => void;
 
 export interface Message<T> {
@@ -35,7 +35,10 @@ export class GameServer {
           ) as unknown as Message<unknown>;
           const handler = this.handlers.get(message.type);
           if (!handler) {
-            send(ws, {type: 'error', body: 'Wrong message type'});
+            send(ws, {
+              type: 'error',
+              body: `Wrong message type: ${message.type}`,
+            });
             return;
           }
           handler(message.body, ws);

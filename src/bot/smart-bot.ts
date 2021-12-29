@@ -58,7 +58,7 @@ export class SmartBot {
     return SmartBot.findBestGameStep([...bestNodeToMove, ...bestWallToPlace]);
   }
 
-  bestWallToPlace(): GameStep[] {
+  private bestWallToPlace(): GameStep[] {
     return getWallToPlace(this.game).map(w => {
       const gameCopy = this.game.copy();
       gameCopy.placeWall(w); // current player was changed
@@ -69,7 +69,7 @@ export class SmartBot {
     });
   }
 
-  bestNodeToMove(): GameStep[] {
+  private bestNodeToMove(): GameStep[] {
     return this.game.allowedNodesToMove().map(n => {
       const gameCopy = this.game.copy();
       gameCopy.moveCurrentPlayerToNode(gameCopy.getNode(n.position));

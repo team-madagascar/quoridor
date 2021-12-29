@@ -1,4 +1,4 @@
 node_modules
 .idea
-bot-build
+build
 game-log.txt

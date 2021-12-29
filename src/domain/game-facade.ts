@@ -1,5 +1,6 @@
 import {Game} from './core/game';
 import {GameClient} from './client';
+import {Command} from './command';
 
 export enum PlayerGameResult {
   Victory,
@@ -9,6 +10,7 @@ export enum PlayerGameResult {
 export class GameFacade {
   private _game: Game | undefined;
   private _currentClient: GameClient;
+  private _opponentStep: Command | null = null;
 
   constructor(
     private readonly _client1: GameClient,
@@ -29,9 +31,14 @@ export class GameFacade {
     });
     await this.notifyGameStarted();
     while (!this._game.isGameOver()) {
-      const command = await this._currentClient.listener.onNextStep(this._game);
+      const command = await this._currentClient.listener.onNextStep(
+        this._game,
+        this._opponentStep
+      );
       command.invoke(this._game);
+      this._opponentStep = command;
       this.changeCurrentClient();
+      await this._currentClient.listener.onOpponentStep(this._game, command);
     }
     await Promise.all([
       this.sendWinnerGameResult(),

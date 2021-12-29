@@ -12,3 +12,7 @@ server.addHandler<{}>('connect', (msg, client) => {
 server.addHandler<StepMessage>('step', (msg, client) => {
   roomManager.handleStep(client, msg);
 });
+
+server.addHandler<StepMessage>('opponent-step', (msg, client) => {
+  roomManager.updateRoomState(client, msg);
+});

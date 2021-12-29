@@ -7,8 +7,9 @@ import {setWallsNumbers} from './helpers/set-walls-numbers';
 
 const SELECT_MODE_HTML = `
 <div class="select-mode">
-<button class="modal-button" id="one-player-mode">1 player</button>
-<button class="modal-button" id="two-players-mode">2 players</button>
+<button class="modal-button" id="one-player-mode">Player vs Bot</button>
+<button class="modal-button" id="two-players-mode">PVP offline</button>
+<button class="modal-button" id="online-players-mode">PVP online</button>
 </div>
 `;
 
@@ -33,16 +34,21 @@ export const showSelectMode = (): Promise<PlayerTypes> => {
 
   const onePlayerModeButton = document.getElementById('one-player-mode');
   const twoPlayersModeButton = document.getElementById('two-players-mode');
+  const onlineModeButton = document.getElementById('online-players-mode');
 
   const ButtonIdToGameTypes: Record<string, PlayerTypes> = {
     ['one-player-mode']: PlayerTypes.COMPUTER,
     ['two-players-mode']: PlayerTypes.OTHER_PLAYER,
+    ['online-players-mode']: PlayerTypes.ONLINE,
   };
 
   onePlayerModeButton?.addEventListener('click', e => {
     emitter.emit(eventTypes.START_GAME, e);
   });
   twoPlayersModeButton?.addEventListener('click', e => {
+    emitter.emit(eventTypes.START_GAME, e);
+  });
+  onlineModeButton?.addEventListener('click', e => {
     emitter.emit(eventTypes.START_GAME, e);
   });
 
@@ -55,7 +61,6 @@ export const showSelectMode = (): Promise<PlayerTypes> => {
       emitter.off(eventTypes.START_GAME, selectModeHandler);
       resolve(gameType);
     };
-
     emitter.on(eventTypes.START_GAME, selectModeHandler);
   });
 };

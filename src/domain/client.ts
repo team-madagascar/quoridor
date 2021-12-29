@@ -23,7 +23,9 @@ export interface GameListener {
 
   onGameStart(game: GameView): Promise<void>;
 
-  onNextStep(game: GameView): Promise<Command>;
+  onOpponentStep(game: GameView, opponentStep: Command | null): Promise<void>;
+
+  onNextStep(game: GameView, opponentStep: Command | null): Promise<Command>;
 
   onGameOver(result: PlayerGameResult): Promise<void>;
 }

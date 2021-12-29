@@ -12,6 +12,18 @@ import {showWinner, showWinnerForTwoPlayers} from './results-modal';
 export abstract class WebListener implements GameListener {
   constructor(public id: string) {}
 
+  async onOpponentStep(game: GameView, opponentStep: Command): Promise<void> {
+    renderBoard(
+      game.currentPlayer.currentPosition.column,
+      game.currentPlayer.currentPosition.row,
+      game.currentOpponent.currentPosition.column,
+      game.currentOpponent.currentPosition.row,
+      game.placedWalls,
+      game.allowedNodesToMove(),
+      Number(this.id)
+    );
+  }
+
   onSessionOver() {}
 
   onGameStart(game: GameView): Promise<void> {

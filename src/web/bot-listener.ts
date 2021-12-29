@@ -22,4 +22,8 @@ export class BotListener implements GameListener {
   async onNextStep(game: GameView): Promise<Command> {
     return this.bot!.doStep();
   }
+
+  onOpponentStep(game: GameView, opponentStep: Command | null): Promise<void> {
+    return Promise.resolve(undefined);
+  }
 }
